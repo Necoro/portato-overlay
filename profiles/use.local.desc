@@ -1,0 +1,7 @@
+# This file contains descriptions of local USE flags, and the ebuilds which
+# contain them.
+
+# Keep it sorted.
+
+app-portage/portato:etcproposals - Add support for etcproposals.
+app-portage/portato:userpriv - Allow emerge processes as normal user.
