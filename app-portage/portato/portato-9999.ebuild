@@ -5,7 +5,7 @@
 inherit eutils distutils subversion
 
 PPATH="portato/trunk"
-ESVN_REPO_URI="https://portato.svn.sourceforge.net/svnroot/${PPATH}"
+ESVN_REPO_URI="https://svn.origo.ethz.ch/${PPATH}"
 ESVN_PROJECT="portato"
 
 DESCRIPTION="A GUI for Portage written in Python."
