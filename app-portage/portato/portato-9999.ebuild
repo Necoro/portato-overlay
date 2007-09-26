@@ -2,7 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit eutils distutils subversion
+NEED_PYTHON="2.5"
+inherit python eutils distutils subversion
 
 PPATH="portato/trunk"
 ESVN_REPO_URI="https://svn.origo.ethz.ch/${PPATH}"
@@ -30,16 +31,18 @@ RDEPEND=">=sys-apps/portage-2.1.2
 		nls? ( virtual/libintl )
 		etcproposals? ( >=app-portage/etcproposals-1.0 )"
 
+DEPEND="nls? ( sys-devel/gettext )"
+
 S="${WORKDIR}/${PN}"
-CONFIG_DIR="/etc/${PN}/"
-DATA_DIR="/usr/share/${PN}/"
-LOCALE_DIR="/usr/share/locale/"
+CONFIG_DIR="${ROOT}etc/${PN}/"
+DATA_DIR="${ROOT}usr/share/${PN}/"
+LOCALE_DIR="${ROOT}usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 
 apply_sed ()
 {
-	cd "${S}"/${PN}
+	cd "${S}/${PN}"
 
 	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
 	head -n1)
@@ -63,7 +66,7 @@ apply_sed ()
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
 			constants.py
 
-	cd ..
+	cd "${S}"
 
 	# don't do this as "use userpriv && ..." as it makes the whole function
 	# fail, if userpriv is not set
@@ -86,7 +89,7 @@ src_compile ()
 {
 	apply_sed || die "Applying sed-commands failed."
 
-	cd ${S}
+	cd "${S}"
 	use nls && ./pocompile.sh -emerge
 
 	distutils_src_compile
@@ -94,19 +97,19 @@ src_compile ()
 
 src_install ()
 {
-	dodir ${DATA_DIR}
+	dodir "${DATA_DIR}"
 	distutils_src_install
 
 	newbin portato.py portato
 	dodoc doc/*
 
 	# config
-	insinto ${CONFIG_DIR}
+	insinto "${CONFIG_DIR}"
 	doins etc/*
 
 	# plugins
-	insinto ${PLUGIN_DIR}
-	keepdir ${PLUGIN_DIR}
+	insinto "${PLUGIN_DIR}"
+	keepdir "${PLUGIN_DIR}"
 
 	use etcproposals && doins "plugins/etc_proposals.xml"
 	use libnotify && doins "plugins/notify.xml"
