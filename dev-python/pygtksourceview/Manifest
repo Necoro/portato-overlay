@@ -1,0 +1,8 @@
+DIST pygtksourceview-2.0.0.tar.bz2 255507 RMD160 8307adca2ac32ba6a2478088791c367b653a6062 SHA1 4ded6c829efa2af95c4619b442f99c3d44ccca64 SHA256 749075c118a029efc51c58f4a49afbf0ec969a1c1f9ee8c25782ea08b3f9c649
+EBUILD pygtksourceview-2.0.0.ebuild 835 RMD160 b5ed7ef4b5c890ea620be8f8e12675739a810257 SHA1 9b90278eb79798e1b645cf80e8dcdb1740f79a9f SHA256 0871b2daf9dcf2181bf882471d5a142db2f290a4196c89a1532b17c814302dc1
+MD5 62a6cbbc2939c1b90e007870b6aa334f pygtksourceview-2.0.0.ebuild 835
+RMD160 b5ed7ef4b5c890ea620be8f8e12675739a810257 pygtksourceview-2.0.0.ebuild 835
+SHA256 0871b2daf9dcf2181bf882471d5a142db2f290a4196c89a1532b17c814302dc1 pygtksourceview-2.0.0.ebuild 835
+MD5 be07c50d9ef94bff9b59c7a28c2cca7b files/digest-pygtksourceview-2.0.0 268
+RMD160 cfa4f573e2197e43ee61dc6d817fddf2f83f9c71 files/digest-pygtksourceview-2.0.0 268
+SHA256 47ce4e602bb4a50ea81b59c7ca2bbcc95cf61edd5a51b251d57168ce63db0b13 files/digest-pygtksourceview-2.0.0 268
