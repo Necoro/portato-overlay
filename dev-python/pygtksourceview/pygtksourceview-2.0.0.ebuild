@@ -18,7 +18,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-
 RDEPEND=">=dev-python/pygobject-2.11.3
 	>=dev-python/pygtk-2.8
 	>=x11-libs/gtksourceview-2
-	!dev-util/pygtksourceview"
+	!dev-util/portatosourceview"
 
 DEPEND="${RDEPEND}
 	>=dev-util/pkgconfig-0.9"
