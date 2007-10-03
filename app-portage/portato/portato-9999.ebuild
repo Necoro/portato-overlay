@@ -34,9 +34,9 @@ RDEPEND=">=sys-apps/portage-2.1.2
 DEPEND="nls? ( sys-devel/gettext )"
 
 S="${WORKDIR}/${PN}"
-CONFIG_DIR="${ROOT}etc/${PN}/"
-DATA_DIR="${ROOT}usr/share/${PN}/"
-LOCALE_DIR="${ROOT}usr/share/locale/"
+CONFIG_DIR="/etc/${PN}/"
+DATA_DIR="/usr/share/${PN}/"
+LOCALE_DIR="/usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 
@@ -55,12 +55,12 @@ apply_sed ()
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
-			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${CONFIG_DIR}\";" \
-			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${DATA_DIR}\";" \
-			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ICON_DIR}\";" \
-			-e "s;^\(PLUGIN_DIR\s*=\s*\).*;\1\"${PLUGIN_DIR}\";" \
-			-e "s;^\(XSD_DIR\s*=\s*\).*;\1\"${DATA_DIR}\";" \
-			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${LOCALE_DIR}\";" \
+			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
+			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
+			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
+			-e "s;^\(PLUGIN_DIR\s*=\s*\).*;\1\"${ROOT}${PLUGIN_DIR}\";" \
+			-e "s;^\(XSD_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
+			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
