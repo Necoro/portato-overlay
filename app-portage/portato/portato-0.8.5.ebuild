@@ -33,9 +33,9 @@ RDEPEND=">=sys-apps/portage-2.1.2
 DEPEND="nls? ( sys-devel/gettext )"
 
 S="${WORKDIR}/${PN}"
-CONFIG_DIR="/etc/${PN}/"
-DATA_DIR="/usr/share/${PN}/"
-LOCALE_DIR="/usr/share/locale/"
+CONFIG_DIR="etc/${PN}/"
+DATA_DIR="usr/share/${PN}/"
+LOCALE_DIR="usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 
