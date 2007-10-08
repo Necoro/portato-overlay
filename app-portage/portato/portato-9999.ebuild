@@ -15,7 +15,7 @@ HOMEPAGE="http://portato.sourceforge.net/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="etcproposals kde libnotify nls userpriv"
+IUSE="catapult etcproposals kde libnotify nls userpriv"
 
 RDEPEND=">=sys-apps/portage-2.1.2
 		>=dev-python/lxml-1.3.2
@@ -27,6 +27,7 @@ RDEPEND=">=sys-apps/portage-2.1.2
 			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5 ) )
 			!kde? ( >=x11-libs/gksu-2.0.0 ) )
 		
+		catapult? ( app-portage/catapult )
 		libnotify? ( >=dev-python/notify-python-0.1.1 )
 		nls? ( virtual/libintl )
 		etcproposals? ( >=app-portage/etcproposals-1.0 )"
@@ -54,6 +55,10 @@ apply_sed ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
+	# catapult?
+	local catapult="False"
+	use catapult && catapult="True"
+
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
@@ -64,6 +69,7 @@ apply_sed ()
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\s$catapult;" \
 			constants.py
 
 	cd "${S}"
