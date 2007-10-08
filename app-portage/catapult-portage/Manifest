@@ -1,0 +1,7 @@
+EBUILD catapult-portage-9999.ebuild 670 RMD160 19aaa12474a848528eec0c1299c6e8107e72ac1f SHA1 9cde02b3f10b4a9a380c48d71fb779cbfc1d0d1a SHA256 b26c19ece71a6be97d73426e1fe1fdd5f10625e0e0bf2198959d0d14b0d6a1f8
+MD5 87a65178cb1ba74bfc69cc6a453a40b0 catapult-portage-9999.ebuild 670
+RMD160 19aaa12474a848528eec0c1299c6e8107e72ac1f catapult-portage-9999.ebuild 670
+SHA256 b26c19ece71a6be97d73426e1fe1fdd5f10625e0e0bf2198959d0d14b0d6a1f8 catapult-portage-9999.ebuild 670
+MD5 d41d8cd98f00b204e9800998ecf8427e files/digest-catapult-portage-9999 0
+RMD160 9c1185a5c5e9fc54612808977ee8f548b2258d31 files/digest-catapult-portage-9999 0
+SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 files/digest-catapult-portage-9999 0
