@@ -69,7 +69,7 @@ apply_sed ()
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\s$catapult;" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
 			constants.py
 
 	cd "${S}"
