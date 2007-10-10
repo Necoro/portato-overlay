@@ -8,7 +8,7 @@ DESCRIPTION="A text widget implementing syntax highlighting and other features"
 HOMEPAGE="http://www.gnome.org/"
 
 LICENSE="GPL-2"
-SLOT="2"
+SLOT="2.0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
 IUSE="doc"
 
