@@ -64,9 +64,8 @@ apply_sed ()
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
+			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1DATA_DIR;" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
-			-e "s;^\(PLUGIN_DIR\s*=\s*\).*;\1\"${ROOT}${PLUGIN_DIR}\";" \
-			-e "s;^\(XSD_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
