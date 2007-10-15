@@ -8,7 +8,7 @@ inherit distutils gnome2 python virtualx autotools
 
 DESCRIPTION="A gtksourceview widget for portato (based on pygtk)."
 HOMEPAGE="http://portato.sourceforge.net/"
-SRC_URI="mirror://sourceforge/portato/${P}.tar.gz"
+SRC_URI="http://download.origo.ethz.ch/portato/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
