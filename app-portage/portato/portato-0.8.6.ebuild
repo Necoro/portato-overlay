@@ -1,6 +1,6 @@
 # Copyright 1999-2007 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.8.5.ebuild,v 1.1 2007/09/09 21:10:34 jokey Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.8.6.ebuild,v 1.1 2007/10/20 17:03:43 jokey Exp $
 
 NEED_PYTHON="2.5"
 inherit python eutils distutils
@@ -11,7 +11,7 @@ SRC_URI="http://download.origo.ethz.ch/portato/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="x86 amd64 ppc"
+KEYWORDS="amd64 ppc x86"
 IUSE="kde libnotify nls userpriv"
 
 RDEPEND=">=sys-apps/portage-2.1.2
@@ -20,6 +20,7 @@ RDEPEND=">=sys-apps/portage-2.1.2
 		>=x11-libs/vte-0.12.2
 		>=gnome-base/libglade-2.5.1
 		>=dev-python/pygtksourceview-2.0.0
+		!dev-util/portatosourceview
 
 		!userpriv? (
 			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5	) )
@@ -39,9 +40,19 @@ LOCALE_DIR="usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 
-apply_sed ()
+pkg_setup ()
 {
-	cd "${S}/${PN}"
+	if ! built_with_use x11-libs/vte python; then
+		echo
+		eerror "x11-libs/vte has not been built with python support."
+		eerror "Please re-emerge vte with the python use-flag enabled."
+		die "missing python flag for x11-libs/vte"
+	fi
+}
+
+src_compile ()
+{
+	cd "${S}"
 
 	# currently only gtk is supported
 	local std="gtk"
@@ -56,36 +67,13 @@ apply_sed ()
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1DATA_DIR;" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
-			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
-			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
-			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
+			-e "s;^\(FRONTENDS\s*=\s*\).*;\1${frontends};" \
+			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"${std}\";" \
+			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1${su};" \
 			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
-			constants.py
-	
-	cd "${S}"
+			"${PN}"/constants.py
 
-	# don't do this as "use userpriv && ..." as it makes the whole function
-	# fail, if userpriv is not set
-	if use userpriv; then
-		sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
-	fi
-}
-
-pkg_setup ()
-{
-	if ! built_with_use x11-libs/vte python; then
-		echo
-		eerror "x11-libs/vte has not been built with python support."
-		eerror "Please re-emerge vte with the python use-flag enabled."
-		die "missing python flag for x11-libs/vte"
-	fi
-}
-
-src_compile ()
-{
-	apply_sed || die "Applying sed-commands failed."
-
-	cd "${S}"
+	use userpriv &&	sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
 	use nls && ./pocompile.sh -emerge
 
 	distutils_src_compile
@@ -93,26 +81,24 @@ src_compile ()
 
 src_install ()
 {
-	dodir "${DATA_DIR}"
+	dodir ${DATA_DIR}
 	distutils_src_install
 
 	newbin portato.py portato
 	dodoc doc/*
 
 	# config
-	insinto "${CONFIG_DIR}"
+	insinto ${CONFIG_DIR}
 	doins etc/*
 
 	# plugins
-	insinto "${PLUGIN_DIR}"
-	keepdir "${PLUGIN_DIR}"
+	insinto ${PLUGIN_DIR}
+	keepdir ${PLUGIN_DIR}
 
 	use libnotify && doins plugins/notify.xml
 
-	# icon
+	# desktop
 	doicon icons/portato-icon.png
-
-	# menus
 	domenu portato.desktop
 
 	# nls
