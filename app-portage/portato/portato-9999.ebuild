@@ -18,7 +18,7 @@ KEYWORDS="~x86 ~amd64 ~ppc"
 IUSE="catapult etcproposals kde libnotify nls userpriv"
 
 RDEPEND=">=dev-python/lxml-1.3.2
-		>=dev-python/pygtk-2.10.4
+		>=dev-python/pygtk-2.12.0
 		>=x11-libs/vte-0.12.2
 		>=gnome-base/libglade-2.5.1
 		>=x11-libs/gtksourceview-2.0.1-r1
