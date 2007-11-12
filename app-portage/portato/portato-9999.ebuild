@@ -44,10 +44,18 @@ LOCALE_DIR="usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 
-apply_sed ()
+pkg_setup ()
 {
-	cd "${S}/${PN}"
+	if ! built_with_use x11-libs/vte python; then
+		echo
+		eerror "x11-libs/vte has not been built with python support."
+		eerror "Please re-emerge vte with the python use-flag enabled."
+		die "missing python flag for x11-libs/vte"
+	fi
+}
 
+src_compile ()
+{
 	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
 	head -n1)
 	
@@ -72,32 +80,9 @@ apply_sed ()
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
 			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
-			constants.py
+			${PN}/constants.py
 
-	cd "${S}"
-
-	# don't do this as "use userpriv && ..." as it makes the whole function
-	# fail, if userpriv is not set
-	if use userpriv; then
-		sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
-	fi
-}
-
-pkg_setup ()
-{
-	if ! built_with_use x11-libs/vte python; then
-		echo
-		eerror "x11-libs/vte has not been built with python support."
-		eerror "Please re-emerge vte with the python use-flag enabled."
-		die "missing python flag for x11-libs/vte"
-	fi
-}
-
-src_compile ()
-{
-	apply_sed || die "Applying sed-commands failed."
-
-	cd "${S}"
+	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
 	use nls && ./pocompile.sh -emerge
 
 	distutils_src_compile
