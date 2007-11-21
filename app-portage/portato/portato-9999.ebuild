@@ -58,7 +58,7 @@ src_compile ()
 {
 	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
 	head -n1)
-	
+
 	# currently only gtk is supported
 	local std="gtk"
 	local frontends="[\"$std\"]"
