@@ -15,7 +15,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="catapult etcproposals kde libnotify nls userpriv"
+IUSE="catapult etc-proposals kde libnotify nls userpriv"
 
 RDEPEND=">=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
@@ -33,7 +33,7 @@ RDEPEND=">=dev-python/lxml-1.3.2
 		!catapult? ( >=sys-apps/portage-2.1.2 )
 		libnotify? ( >=dev-python/notify-python-0.1.1 )
 		nls? ( virtual/libintl )
-		etcproposals? ( >=app-portage/etcproposals-1.0 )"
+		etc-proposals? ( >=app-portage/etc-proposals-1.0 )"
 
 DEPEND="nls? ( sys-devel/gettext )"
 
