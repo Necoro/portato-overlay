@@ -104,7 +104,7 @@ src_install ()
 	insinto "${PLUGIN_DIR}"
 	keepdir "${PLUGIN_DIR}"
 
-	use etcproposals && doins "plugins/etc_proposals.xml"
+	use etc-proposals && doins "plugins/etc_proposals.xml"
 	use libnotify && doins "plugins/notify.xml"
 
 	# icon
