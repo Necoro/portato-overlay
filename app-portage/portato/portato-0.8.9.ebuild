@@ -1,21 +1,20 @@
-# Copyright 1999-2006 Gentoo Foundation
+# Copyright 1999-2007 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.8.6.ebuild,v 1.1 2007/10/20 17:03:43 jokey Exp $
+
+EAPI=1
 
 NEED_PYTHON="2.5"
-inherit python eutils distutils subversion
-
-PPATH="portato/trunk"
-ESVN_REPO_URI="https://svn.origo.ethz.ch/${PPATH}"
-ESVN_PROJECT="portato"
+inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
+SRC_URI="http://download.origo.ethz.ch/portato/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="catapult etc-proposals kde libnotify nls userpriv"
+KEYWORDS="~amd64 ~ppc ~x86"
+IUSE="etc-proposals kde +libnotify nls userpriv"
 
 RDEPEND=">=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
@@ -23,18 +22,17 @@ RDEPEND=">=dev-python/lxml-1.3.2
 		>=gnome-base/libglade-2.5.1
 		>=x11-libs/gtksourceview-2.0.1-r1
 		>=dev-python/pygtksourceview-2.0.0
+		>=sys-apps/portage-2.1.2
 		!userpriv? (
 			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5 ) )
 			!kde? ( >=x11-libs/gksu-2.0.0 ) )
 		
-		catapult? ( 
-			app-portage/catapult 
-			>=dev-python/dbus-python-0.82.2 )
-		!catapult? ( >=sys-apps/portage-2.1.2 )
 		libnotify? ( >=dev-python/notify-python-0.1.1 )
 		nls? ( virtual/libintl )
 		etc-proposals? ( >=app-portage/etc-proposals-1.0 )"
 
+# only needs gettext as build dependency
+# python should be set as DEPEND in the python-eclass
 DEPEND="nls? ( sys-devel/gettext )"
 
 S="${WORKDIR}/${PN}"
@@ -56,33 +54,28 @@ pkg_setup ()
 
 src_compile ()
 {
-	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
-	head -n1)
+	cd "${S}"
 
 	# currently only gtk is supported
 	local std="gtk"
 	local frontends="[\"$std\"]"
 
 	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
+	use kde && su="\"kdesu -t -d -i %s --nonewdcop -c\" % APP_ICON"
 
-	# catapult?
-	local catapult="False"
-	use catapult && catapult="True"
-
-	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
+	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1DATA_DIR;" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
-			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
-			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
-			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
-			${PN}/constants.py
+			-e "s;^\(FRONTENDS\s*=\s*\).*;\1${frontends};" \
+			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"${std}\";" \
+			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1${su};" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
+			"${PN}"/constants.py
 
-	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
+	use userpriv &&	sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
 	use nls && ./pocompile.sh -emerge
 
 	distutils_src_compile
