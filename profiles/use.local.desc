@@ -3,5 +3,5 @@
 
 # Keep it sorted.
 
-app-portage/portato:etcproposals - Add support for etcproposals.
+app-portage/portato:etc-proposals - Add support for etc-proposals.
 app-portage/portato:userpriv - Allow emerge processes as normal user.
