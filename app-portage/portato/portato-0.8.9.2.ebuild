@@ -23,6 +23,7 @@ RDEPEND=">=dev-python/lxml-1.3.2
 		>=x11-libs/gtksourceview-2.0.1-r1
 		>=dev-python/pygtksourceview-2.0.0
 		>=sys-apps/portage-2.1.2
+		app-portage/portage-utils
 		!userpriv? (
 			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5 ) )
 			!kde? ( >=x11-libs/gksu-2.0.0 ) )
