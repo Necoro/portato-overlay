@@ -9,7 +9,7 @@ inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
-SRC_URI="http://download.origo.ethz.ch/portato/${P}.tar.gz"
+SRC_URI="http://download.origo.ethz.ch/portato/${PN}-0.8.9.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -50,6 +50,13 @@ pkg_setup ()
 		eerror "Please re-emerge vte with the python use-flag enabled."
 		die "missing python flag for x11-libs/vte"
 	fi
+}
+
+src_unpack ()
+{
+	unpack ${A}
+	cd "${S}"
+	epatch "${FILESDIR}/${PV}-fixes.patch"
 }
 
 src_compile ()
