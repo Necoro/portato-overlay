@@ -17,23 +17,24 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
 IUSE="catapult etc-proposals kde libnotify nls userpriv"
 
-RDEPEND=">=dev-python/lxml-1.3.2
+RDEPEND="app-portage/portage-utils
+		x11-libs/vte
+		gnome-base/libglade
+		dev-python/pygtksourceview:2
+		>=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
-		>=x11-libs/vte-0.12.2
-		>=gnome-base/libglade-2.5.1
-		>=x11-libs/gtksourceview-2.0.1-r1
-		>=dev-python/pygtksourceview-2.0.0
+		
 		!userpriv? (
-			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5 ) )
-			!kde? ( >=x11-libs/gksu-2.0.0 ) )
+			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
+			!kde? ( x11-libs/gksu ) )
 		
 		catapult? ( 
 			app-portage/catapult 
 			>=dev-python/dbus-python-0.82.2 )
 		!catapult? ( >=sys-apps/portage-2.1.2 )
-		libnotify? ( >=dev-python/notify-python-0.1.1 )
+		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
-		etc-proposals? ( >=app-portage/etc-proposals-1.0 )"
+		etc-proposals? ( app-portage/etc-proposals )"
 
 DEPEND="nls? ( sys-devel/gettext )"
 

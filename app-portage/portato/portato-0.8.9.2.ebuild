@@ -16,21 +16,21 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
 IUSE="etc-proposals kde +libnotify nls userpriv"
 
-RDEPEND=">=dev-python/lxml-1.3.2
-		>=dev-python/pygtk-2.12.0
-		>=x11-libs/vte-0.12.2
-		>=gnome-base/libglade-2.5.1
-		>=x11-libs/gtksourceview-2.0.1-r1
-		>=dev-python/pygtksourceview-2.0.0
-		>=sys-apps/portage-2.1.2
+RDEPEND="x11-libs/vte
+		gnome-base/libglade
+		dev-python/pygtksourceview:2
 		app-portage/portage-utils
-		!userpriv? (
-			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5 ) )
-			!kde? ( >=x11-libs/gksu-2.0.0 ) )
+		>=dev-python/lxml-1.3.2
+		>=dev-python/pygtk-2.12.0
+		>=sys-apps/portage-2.1.2
 		
-		libnotify? ( >=dev-python/notify-python-0.1.1 )
+		!userpriv? (
+			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
+			!kde? ( x11-libs/gksu ) )
+		
+		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
-		etc-proposals? ( >=app-portage/etc-proposals-1.0 )"
+		etc-proposals? ( app-portage/etc-proposals )"
 
 # only needs gettext as build dependency
 # python should be set as DEPEND in the python-eclass

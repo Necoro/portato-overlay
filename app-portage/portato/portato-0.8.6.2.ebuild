@@ -14,19 +14,18 @@ SLOT="0"
 KEYWORDS="amd64 ppc x86"
 IUSE="kde libnotify nls userpriv"
 
-RDEPEND=">=sys-apps/portage-2.1.2
+RDEPEND="x11-libs/vte
+		gnome-base/libglade
+		dev-python/pygtksourceview:2
+		>=sys-apps/portage-2.1.2
 		>=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.10.4
-		>=x11-libs/vte-0.12.2
-		>=gnome-base/libglade-2.5.1
-		>=dev-python/pygtksourceview-2.0.0
-		!dev-util/portatosourceview
 
 		!userpriv? (
-			kde? ( || ( >=kde-base/kdesu-3.5.5 >=kde-base/kdebase-3.5.5	) )
-			!kde? ( >=x11-libs/gksu-2.0.0 ) )
+			kde? ( || ( kde-base/kdesu kde-base/kdebase	) )
+			!kde? ( x11-libs/gksu ) )
 
-		libnotify? ( >=dev-python/notify-python-0.1.1 )
+		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
 
 # only needs gettext as build dependency
