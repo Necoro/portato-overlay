@@ -1,12 +1,12 @@
-==== Patch <0.8.9.2> level 1
-Source: 0d5daa73-5169-4a83-8e4c-b6d9a920c5be:/trunk:669
+==== Patch <0.8.9.3> level 1
+Source: 0d5daa73-5169-4a83-8e4c-b6d9a920c5be:/trunk:682
 Target: 0d5daa73-5169-4a83-8e4c-b6d9a920c5be:/0.8.9:636
 Log:
 Patch.
 === i18n/de.po
 ==================================================================
 --- i18n/de.po	(revision 636)
-+++ i18n/de.po	(patch 0.8.9.2 level 1)
++++ i18n/de.po	(patch 0.8.9.3 level 1)
 @@ -2,7 +2,7 @@
  msgstr ""
  "Project-Id-Version: Portato\n"
@@ -825,7 +825,7 @@ Patch.
 === i18n/messages.pot
 ==================================================================
 --- i18n/messages.pot	(revision 636)
-+++ i18n/messages.pot	(patch 0.8.9.2 level 1)
++++ i18n/messages.pot	(patch 0.8.9.3 level 1)
 @@ -8,7 +8,7 @@
  msgstr ""
  "Project-Id-Version: PACKAGE VERSION\n"
@@ -1599,7 +1599,7 @@ Patch.
 === portato.py
 ==================================================================
 --- portato.py	(revision 636)
-+++ portato.py	(patch 0.8.9.2 level 1)
++++ portato.py	(patch 0.8.9.3 level 1)
 @@ -102,7 +102,7 @@
  		try:
  			import shm_wrapper as shm
@@ -1612,7 +1612,7 @@ Patch.
 === doc/TODO
 ==================================================================
 --- doc/TODO	(revision 636)
-+++ doc/TODO	(patch 0.8.9.2 level 1)
++++ doc/TODO	(patch 0.8.9.3 level 1)
 @@ -16,6 +16,7 @@
  - save/restore queue on exit/start
  - only remove already merged packages from queue
@@ -1640,7 +1640,7 @@ Patch.
 === doc/Changelog
 ==================================================================
 --- doc/Changelog	(revision 636)
-+++ doc/Changelog	(patch 0.8.9.2 level 1)
++++ doc/Changelog	(patch 0.8.9.3 level 1)
 @@ -7,7 +7,8 @@
  - handle new "use defaults" correctly
  - allowed the permanent change of a plugin status
@@ -1656,7 +1656,7 @@ Patch.
 === _shm/shm_wrapper.py
 ==================================================================
 --- _shm/shm_wrapper.py	(revision 636)
-+++ _shm/shm_wrapper.py	(patch 0.8.9.2 level 1)
++++ _shm/shm_wrapper.py	(patch 0.8.9.3 level 1)
 @@ -0,0 +1,301 @@
 +# shm_wrapper - A wrapper for the shm module which provides access
 +# to System V shared memory and semaphores on *nix systems.
@@ -1962,7 +1962,7 @@ Patch.
 === _shm/shmmodule.c
 ==================================================================
 --- _shm/shmmodule.c	(revision 636)
-+++ _shm/shmmodule.c	(patch 0.8.9.2 level 1)
++++ _shm/shmmodule.c	(patch 0.8.9.3 level 1)
 @@ -0,0 +1,1396 @@
 +/****************************************************************************
 + *
@@ -3363,7 +3363,7 @@ Patch.
 === setup.py
 ==================================================================
 --- setup.py	(revision 636)
-+++ setup.py	(patch 0.8.9.2 level 1)
++++ setup.py	(patch 0.8.9.3 level 1)
 @@ -127,14 +127,14 @@
  	uis = [x for x in os.listdir("portato/gui/templates/ui/") if x.endswith(".ui")]
  	return [os.path.join("portato/gui/templates/ui",x) for x in uis]
@@ -3385,7 +3385,7 @@ Patch.
 === portato/gui/gtk/windows.py
 ==================================================================
 --- portato/gui/gtk/windows.py	(revision 636)
-+++ portato/gui/gtk/windows.py	(patch 0.8.9.2 level 1)
++++ portato/gui/gtk/windows.py	(patch 0.8.9.3 level 1)
 @@ -3,7 +3,7 @@
  # File: portato/gui/gtk/windows.py
  # This file is part of the Portato-Project, a graphical portage-frontend.
@@ -3487,7 +3487,15 @@ Patch.
  
  	def cb_ok_clicked(self, button):
  		"""Saves, writes to config-file and closes the window."""
-@@ -423,6 +458,7 @@
+@@ -417,12 +452,13 @@
+ 		self.maskedLabel = self.tree.get_widget("maskedLabel")
+ 
+ 		# labels
+-		generalEB = self.tree.get_widget("generalEB")
+-		generalEB.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#FFFFFF"))
++		generalVB = self.tree.get_widget("generalVB")
++		generalVB.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse("#FFFFFF"))
+ 		
  		self.nameLabel = self.tree.get_widget("nameLabel")
  		self.descLabel = self.tree.get_widget("descLabel")
  		self.overlayLabel = self.tree.get_widget("overlayLabel")
@@ -3495,7 +3503,34 @@ Patch.
  		self.overlayLL = self.tree.get_widget("overlayLabelLabel")
  		self.linkBox = self.tree.get_widget("linkBox")
  		self.notInSysLabel = self.tree.get_widget("notInSysLabel")
-@@ -497,7 +533,7 @@
+@@ -442,7 +478,7 @@
+ 		self.changelogView = self.tree.get_widget("changelogScroll").get_child()
+ 		self.filesView = self.tree.get_widget("filesScroll").get_child()
+ 
+-	def update (self, cp, queue = None, version = None, doEmerge = True, instantChange = False):
++	def update (self, cp, queue = None, version = None, doEmerge = True, instantChange = False, type = None):
+ 		"""Updates the table to show the contents for the package.
+ 		
+ 		@param cp: the selected package
+@@ -454,13 +490,16 @@
+ 		@param doEmerge: if False, the emerge buttons are disabled
+ 		@type doEmerge: boolean
+ 		@param instantChange: if True the changed keywords are updated instantly
+-		@type instantChange: boolean"""
++		@type instantChange: boolean
++		@param type: the type of the queue this package is in; if None there is no queue :)
++		@type type: string"""
+ 		
+ 		self.cp = cp # category/package
+ 		self.version = version # version - if not None this is used
+ 		self.queue = queue
+ 		self.doEmerge = doEmerge
+ 		self.instantChange = instantChange
++		self.type = type
+ 
+ 		# packages and installed packages
+ 		if not self.doEmerge:
+@@ -497,7 +536,7 @@
  		self.descLabel.set_label(desc)
  
  		# overlay
@@ -3504,7 +3539,7 @@ Patch.
  			self.overlayLabel.set_label(pkg.get_overlay_path())
  			self.overlayLabel.show()
  			self.overlayLL.show()
-@@ -505,6 +541,9 @@
+@@ -505,6 +544,9 @@
  			self.overlayLabel.hide()
  			self.overlayLL.hide()
  
@@ -3514,16 +3549,19 @@ Patch.
  		# link
  		for c in self.linkBox.get_children():
  			self.linkBox.remove(c)
-@@ -642,15 +681,15 @@
+@@ -640,17 +682,18 @@
+ 
+ 	def _update_keywords (self, emerge, update = False):
  		if emerge:
++			type = "install" if not self.type else self.type
  			try:
  				try:
 -					self.queue.append(self.actual_package().get_cpv(), unmerge = False, update = update)
-+					self.queue.append(self.actual_package().get_cpv(), type = "install", update = update)
++					self.queue.append(self.actual_package().get_cpv(), type = type, update = update)
  				except PackageNotFoundException, e:
  					if unmask_dialog(e[0]) == gtk.RESPONSE_YES:
 -						self.queue.append(self.actual_package().get_cpv(), unmerge = False, unmask = True, update = update)
-+						self.queue.append(self.actual_package().get_cpv(), type = "install", unmask = True, update = update)
++						self.queue.append(self.actual_package().get_cpv(), type = type, unmask = True, update = update)
  			except BlockedException, e:
  				blocked_dialog(e[0], e[1])
  		else:
@@ -3533,7 +3571,7 @@ Patch.
  			except PackageNotFoundException, e:
  				error(_("Package could not be found: %s"), e[0])
  				#masked_dialog(e[0])
-@@ -752,9 +791,9 @@
+@@ -752,9 +795,9 @@
  		self.actual_package().remove_new_use_flags()
  		self.actual_package().remove_new_masked()
  		self.actual_package().remove_new_testing()
@@ -3546,7 +3584,7 @@ Patch.
  		if self.instantChange:
  			self._update_keywords(True, update = True)
  		return True
-@@ -762,13 +801,13 @@
+@@ -762,13 +805,13 @@
  	def cb_package_emerge_clicked (self, button):
  		"""Callback for pressed emerge-button. Adds the package to the EmergeQueue."""
  		self._update_keywords(True)
@@ -3562,20 +3600,88 @@ Patch.
  		return True
  
  	def cb_testing_toggled (self, button):
-@@ -978,8 +1017,10 @@
+@@ -842,7 +885,7 @@
+ 		flag = store[path][2]
+ 		pkg = self.actual_package()
+ 		
+-		if flag in pkg.get_global_settings("USE_EXPAND").split(): # ignore expanded flags
++		if pkg.use_expanded(flag): # ignore expanded flags
+ 			return False
+ 
+ 		store[path][0] = not store[path][0]
+@@ -944,7 +987,31 @@
+ 		self.termHB = self.tree.get_widget("termHB")
+ 		self.build_terminal()
+ 		
++		# notebooks
++		self.sysNotebook = self.tree.get_widget("systemNotebook")
++		self.pkgNotebook = self.tree.get_widget("packageNotebook")
++		self.set_notebook_tabpos(map(PreferenceWindow.tabpos.get, map(int, (self.cfg.get("packageTabPos", "GTK"), self.cfg.get("systemTabPos", "GTK")))))
++		
++		# the different scrolls
++		ebuildScroll = self.tree.get_widget("ebuildScroll")
++		ebuildScroll.add(HighlightView(lambda p: p.get_ebuild_path(), ["gentoo", "sh"]))
+ 
++		changelogScroll = self.tree.get_widget("changelogScroll")
++		changelogScroll.add(HighlightView(lambda p: os.path.join(p.get_package_path(), "ChangeLog"), ["changelog"]))
++
++		def show_files (p):
++			try:
++				for f in p.get_files():
++					yield " %s\n" % f
++			except IOError, e:
++				yield _("Error: %s") % e.strerror
++
++		filesScroll = self.tree.get_widget("filesScroll")
++		filesScroll.add(InstalledOnlyView(show_files))
++		
++		# table
++		self.packageTable = PackageTable(self)
++
+ 		# popups
+ 		self.queuePopup = Popup("queuePopup", self)
+ 		self.consolePopup = Popup("consolePopup", self)
+@@ -972,36 +1039,16 @@
+ 		self.queueTree = GtkTree(self.queueList.get_model())
+ 		self.queue = EmergeQueue(console = self.console, tree = self.queueTree, db = self.db, title_update = self.title_update, threadClass = GtkThread)
+ 		
++		self.catList.get_selection().select_path(1)
++		self.pkgList.get_selection().select_path(0)
++		
+ 		# session
+ 		splash(_("Restoring Session"))
+ 		self.load_session()
  		
  		splash(_("Finishing startup"))
  		
 -		# notebook
 -		self.notebook = self.tree.get_widget("systemNotebook")
-+		# notebooks
-+		self.sysNotebook = self.tree.get_widget("systemNotebook")
-+		self.pkgNotebook = self.tree.get_widget("packageNotebook")
-+		self.set_notebook_tabpos(map(PreferenceWindow.tabpos.get, map(int, (self.cfg.get("packageTabPos", "GTK"), self.cfg.get("systemTabPos", "GTK")))))
  		self.window.show_all()
- 		
- 		# the hidden stuff
-@@ -1020,12 +1061,12 @@
+-		
+-		# the hidden stuff
+-		ebuildScroll = self.tree.get_widget("ebuildScroll")
+-		ebuildScroll.add(HighlightView(lambda p: p.get_ebuild_path(), ["gentoo", "sh"]))
+-		ebuildScroll.hide_all()
+-
+-		changelogScroll = self.tree.get_widget("changelogScroll")
+-		changelogScroll.add(HighlightView(lambda p: os.path.join(p.get_package_path(), "ChangeLog"), ["changelog"]))
+-		changelogScroll.hide_all()
+-
+-		def show_files (p):
+-			for f in p.get_files():
+-				yield " %s\n" % f
+-
+-		filesScroll = self.tree.get_widget("filesScroll")
+-		filesScroll.add(InstalledOnlyView(show_files))
+-		filesScroll.hide_all()
+-		
+-		# table
+-		self.packageTable = PackageTable(self)
+-		self.packageTable.hide()
+ 	
+ 	def show_package (self, *args, **kwargs):
+ 		self.packageTable.update(*args, **kwargs)
+@@ -1020,12 +1067,12 @@
  	def build_queue_list (self):
  		"""Builds the queue list."""
  
@@ -3590,7 +3696,68 @@ Patch.
  		self.queueList.append_column(col)
  		
  		col = gtk.TreeViewColumn(_("Options"), cell, markup = 1)
-@@ -1163,6 +1204,13 @@
+@@ -1042,6 +1089,7 @@
+ 		self.catList.append_column(col)
+ 
+ 		self.fill_cat_store(store)
++		self.catList.get_selection().connect("changed", self.cb_cat_list_selection)
+ 
+ 	def fill_cat_store (self, store):
+ 		
+@@ -1081,6 +1129,8 @@
+ 		
+ 		self.pkgList.append_column(col)
+ 
++		self.pkgList.get_selection().connect("changed", self.cb_pkg_list_selection)
++
+ 	def fill_pkg_store (self, store, name = None):
+ 		"""Fills a given ListStore with the packages in a category.
+ 		
+@@ -1107,7 +1157,7 @@
+ 			self.session = Session("gtk_session.cfg")
+ 		except (OSError, IOError), e:
+ 			io_ex_dialog(e)
+-			raise
++			return
+ 
+ 		def load_queue (merge, unmerge, oneshot):
+ 			def _load(q, **kwargs):
+@@ -1125,10 +1175,32 @@
+ 			else:
+ 				return ("", "", "")
+ 
++		def load_paned (*pos):
++			pos = map(int, pos)
++			[x.set_position(p) for x,p in zip((self.vpaned, self.hpaned), pos)]
++
++		def save_paned ():
++			return [x.get_position() for x in (self.vpaned, self.hpaned)]
++
++		def save_selection ():
++			def _save(list):
++				return list.get_model().get_string_from_iter(list.get_selection().get_selected()[1])
++
++			return map(_save, (self.catList, self.pkgList))
++
++		def load_selection (*positions):
++			
++			def _load(list, pos):
++				pos = int(pos)
++				list.get_selection().select_path(pos)
++				list.scroll_to_cell(pos)
++
++			map(_load, (self.catList, self.pkgList), positions)
++
+ 		map(self.session.add_handler,[
+ 			([("width", "window"), ("height", "window")], lambda w,h: self.window.resize(int(w), int(h)), self.window.get_size),
+-			([("vpanedpos", "window")], lambda p: self.vpaned.set_position(int(p)), self.vpaned.get_position),
+-			([("hpanedpos", "window")], lambda p: self.hpaned.set_position(int(p)), self.hpaned.get_position),
++			([("vpanedpos", "window"), ("hpanedpos", "window")], load_paned, save_paned),
++			([("catsel", "window"), ("pkgsel", "window")], load_selection, save_selection),
+ 			([("merge", "queue"), ("unmerge", "queue"), ("oneshot", "queue")], load_queue, save_queue)
+ 			])
+ 
+@@ -1163,6 +1235,13 @@
  		"""Is called when we want to jump to a specific package."""
  		self.show_package(cp, self.queue, version = version)
  
@@ -3604,7 +3771,7 @@ Patch.
  	def title_update (self, title):
  		
  		def window_title_update (title):
-@@ -1189,7 +1237,7 @@
+@@ -1189,27 +1268,25 @@
  			else: 
  				title = (_("Console (%(title)s)") % {"title" : title})
  			
@@ -3613,7 +3780,57 @@ Patch.
  
  			return False
  
-@@ -1297,11 +1345,9 @@
+ 		gobject.idle_add(__update, title)
+ 
+-	def cb_cat_list_selection (self, view):
++	def cb_cat_list_selection (self, selection):
+ 		"""Callback for a category-list selection. Updates the package list with the packages in the category."""
+ 		# get the selected category
+-		sel = view.get_selection()
+-		store, it = sel.get_selected()
++		store, it = selection.get_selected()
+ 		if it:
+ 			self.selCatName = store.get_value(it, 0)
+ 			self.pkgList.get_model().clear()
+ 			self.fill_pkg_store(self.pkgList.get_model(), self.selCatName)
+ 		return True
+ 
+-	def cb_pkg_list_selection (self, view):
++	def cb_pkg_list_selection (self, selection):
+ 		"""Callback for a package-list selection. Updates the package info."""
+-		sel = view.get_selection()
+-		store, it = sel.get_selected()
++		store, it = selection.get_selected()
+ 		if it:
+ 			cp = "%s/%s" % (store.get_value(it, 2), store.get_value(it, 1))
+ 			self.show_package(cp, self.queue)
+@@ -1221,7 +1298,7 @@
+ 		self.fill_pkg_store(self.pkgList.get_model(), self.selCatName)
+ 		return True
+ 
+-	def cb_row_activated (self, view, path, *args):
++	def cb_queue_row_activated (self, view, path, *args):
+ 		"""Callback for an activated row in the emergeQueue. Opens a package window."""
+ 		store = self.queueTree
+ 		if len(path) > 1:
+@@ -1230,7 +1307,15 @@
+ 				package = store.get_value(iterator, store.get_cpv_column())
+ 				cat, name, vers, rev = system.split_cpv(package)
+ 				if rev != "r0": vers = vers+"-"+rev
+-				self.show_package(cat+"/"+name, queue = self.queue, version = vers, instantChange = True, doEmerge = False)
++
++				if store.is_in_emerge(iterator):
++					type = "install"
++				elif store.is_in_unmerge(iterator):
++					type = "uninstall"
++				elif store.is_in_update(iterator):
++					type = "update"
++
++				self.show_package(cat+"/"+name, queue = self.queue, version = vers, instantChange = True, doEmerge = False, type = type)
+ 		return True
+ 	
+ 	def cb_queue_tooltip_queried (self, view, x, y, is_keyboard, tooltip):
+@@ -1297,37 +1382,51 @@
  		tooltip.set_markup(string)
  		return string != ""
  
@@ -3626,11 +3843,29 @@ Patch.
 -		
  		if len(flags.newUseFlags) > 0:
  			changed_flags_dialog(_("use flags"))
- 			flags.write_use_flags()
-@@ -1314,20 +1360,27 @@
- 			flags.write_masked()
- 			flags.write_testing()
- 			system.reload_settings()
+-			flags.write_use_flags()
++			try:
++				flags.write_use_flags()
++			except IOError, e:
++				io_ex_dialog(e)
++				return True
+ 		
+ 		if len(flags.new_masked)>0 or len(flags.new_unmasked)>0 or len(flags.newTesting)>0:
+ 			debug("new masked: %s",flags.new_masked)
+ 			debug("new unmasked: %s", flags.new_unmasked)
+ 			debug("new testing: %s", flags.newTesting)
+ 			changed_flags_dialog(_("masking keywords"))
+-			flags.write_masked()
+-			flags.write_testing()
+-			system.reload_settings()
++			try:
++				flags.write_masked()
++				flags.write_testing()
++			except IOError, e:
++				io_ex_dialog(e)
++				return True
++			else:
++				system.reload_settings()
 +
 +		model, iter = self.queueList.get_selection().get_selected()
 +
@@ -3664,7 +3899,7 @@ Patch.
  	def cb_update_clicked (self, action):
  		def __update():
  			
-@@ -1335,15 +1388,15 @@
+@@ -1335,15 +1434,15 @@
  				try:
  					try:
  						for pkg, old_pkg in updating:
@@ -3683,7 +3918,7 @@ Patch.
  				
  				return False
  
-@@ -1353,7 +1406,6 @@
+@@ -1353,7 +1452,6 @@
  				updating = system.update_world(newuse = self.cfg.get_boolean("newuse"), deep = self.cfg.get_boolean("deep"))
  				debug("updating list: %s --> length: %s", [(x.get_cpv(), y.get_cpv()) for x,y in updating], len(updating))
  				gobject.idle_add(cb_idle_append, updating)
@@ -3691,7 +3926,7 @@ Patch.
  			finally:
  				self.window.window.set_cursor(None)
  			
-@@ -1363,29 +1415,35 @@
+@@ -1363,29 +1461,35 @@
  
  	def cb_remove_clicked (self, button):
  		"""Removes a selected item in the (un)emerge-queue if possible."""
@@ -3739,7 +3974,23 @@ Patch.
  		cmd = self.cfg.get("syncCommand")
  
  		if cmd != "emerge --sync":
-@@ -1424,7 +1482,7 @@
+@@ -1395,9 +1499,12 @@
+ 			self.queue.sync()
+ 
+ 	def cb_save_flags_clicked (self, action):
+-		flags.write_use_flags()
+-		flags.write_testing()
+-		flags.write_masked()
++		try:
++			flags.write_use_flags()
++			flags.write_testing()
++			flags.write_masked()
++		except IOError, e:
++			io_ex_dialog(e)
+ 
+ 	@Window.watch_cursor
+ 	def cb_reload_clicked (self, action):
+@@ -1424,7 +1531,7 @@
  					SearchWindow(self.window, packages, self.jump_to)
  
  	def cb_preferences_clicked (self, button):
@@ -3751,7 +4002,7 @@ Patch.
 === portato/gui/gtk/wrapper.py
 ==================================================================
 --- portato/gui/gtk/wrapper.py	(revision 636)
-+++ portato/gui/gtk/wrapper.py	(patch 0.8.9.2 level 1)
++++ portato/gui/gtk/wrapper.py	(patch 0.8.9.3 level 1)
 @@ -3,7 +3,7 @@
  # File: portato/gui/gtk/wrapper.py
  # This file is part of the Portato-Project, a graphical portage-frontend.
@@ -3862,8 +4113,24 @@ Patch.
 === portato/gui/gtk/dialogs.py
 ==================================================================
 --- portato/gui/gtk/dialogs.py	(revision 636)
-+++ portato/gui/gtk/dialogs.py	(patch 0.8.9.2 level 1)
-@@ -68,6 +68,12 @@
++++ portato/gui/gtk/dialogs.py	(patch 0.8.9.3 level 1)
+@@ -11,6 +11,7 @@
+ # Written by René 'Necoro' Neumann <necoro@necoro.net>
+ 
+ import gtk
++from ...helper import error
+ from gettext import lgettext as _
+ 
+ def queue_not_empty_dialog():
+@@ -26,6 +27,7 @@
+ 	if io_ex.filename:
+ 		string = string+": "+io_ex.filename
+ 	
++	error(string)
+ 	dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, string)
+ 	ret = dialog.run()
+ 	dialog.destroy()
+@@ -68,6 +70,12 @@
  	infoMB.destroy()
  	return ret
  
@@ -3879,7 +4146,7 @@ Patch.
 === portato/gui/wrapper.py
 ==================================================================
 --- portato/gui/wrapper.py	(revision 636)
-+++ portato/gui/wrapper.py	(patch 0.8.9.2 level 1)
++++ portato/gui/wrapper.py	(patch 0.8.9.3 level 1)
 @@ -125,6 +125,35 @@
  		@rtype: boolean"""
  		raise NotImplementedError
@@ -3963,7 +4230,7 @@ Patch.
 === portato/gui/gui_helper.py
 ==================================================================
 --- portato/gui/gui_helper.py	(revision 636)
-+++ portato/gui/gui_helper.py	(patch 0.8.9.2 level 1)
++++ portato/gui/gui_helper.py	(patch 0.8.9.3 level 1)
 @@ -3,7 +3,7 @@
  # File: portato/gui/gui_helper.py
  # This file is part of the Portato-Project, a graphical portage-frontend.
@@ -4057,7 +4324,7 @@ Patch.
  			return # in list already and therefore it's already in the tree too	
  		
  		# try to find an already installed instance
-@@ -375,11 +379,11 @@
+@@ -375,29 +379,29 @@
  
  		# add iter
  		subIt = self.tree.append(it, self.tree.build_append_value(cpv, oneshot = oneshot, update = update, downgrade = downgrade, version = uVersion, useChange = changedUse))
@@ -4071,7 +4338,11 @@ Patch.
  		
  		# recursive call
  		for d in deps:
-@@ -390,14 +394,14 @@
+ 			try:
+-				self.update_tree(subIt, d, unmask)
++				self.update_tree(subIt, d, unmask, type = type)
+ 			except backend.BlockedException, e: # BlockedException occured -> delete current tree and re-raise exception
+ 				debug("Something blocked: %s", e[0])
  				self.remove_with_children(subIt)
  				raise
  		
@@ -4115,7 +4386,8 @@ Patch.
  					if hasBeenInQueue: # package has been in queue before
  						self._queue_append(cpv, oneshot)
  					
- 					self.update_tree(parentIt, cpv, unmask, oneshot = oneshot)
+-					self.update_tree(parentIt, cpv, unmask, oneshot = oneshot)
++					self.update_tree(parentIt, cpv, unmask, oneshot = oneshot, type = type)
  			else: # not update
 -				self._queue_append(cpv, oneshot)
 -				if self.emergeIt: 
@@ -4168,7 +4440,7 @@ Patch.
  		@param command: the command to execute - default is "/usr/bin/python /usr/bin/emerge"
  		@type command: string[]"""
  
-@@ -474,28 +490,44 @@
+@@ -474,28 +490,45 @@
  				command = system.get_merge_command()
  
  			# open tty
@@ -4216,6 +4488,7 @@ Patch.
 +						title = self.console.get_window_title()
 +						if title != old_title:
 +							self.title_update(title)
++							old_title = title
 +						time.sleep(0.5)
  
 +			if self.up: 
@@ -4228,7 +4501,7 @@ Patch.
  			if self.title_update: self.title_update(None)
  
  			if self.process is None: # someone resetted this
-@@ -508,9 +540,10 @@
+@@ -508,9 +541,10 @@
  
  			@plugin.hook("after_emerge", packages = packages, retcode = ret)
  			def update_packages():
@@ -4242,7 +4515,7 @@ Patch.
  
  			update_packages()
  			
-@@ -527,17 +560,25 @@
+@@ -527,17 +561,25 @@
  		def prepare(queue):
  			"""Prepares the list of iterators and the list of packages."""
  			list = []
@@ -4270,7 +4543,7 @@ Patch.
  			
  			s = system.get_oneshot_option()
  			if not force: s += system.get_pretend_option()
-@@ -549,6 +590,8 @@
+@@ -549,6 +591,8 @@
  		if self.mergequeue:
  			# prepare package-list
  			list, its = prepare(self.mergequeue)
@@ -4279,7 +4552,7 @@ Patch.
  
  			s = []
  			if not force: s = system.get_pretend_option()
-@@ -573,8 +616,13 @@
+@@ -573,8 +617,13 @@
  		if not force: s += system.get_pretend_option()
  		if options is not None: s += options
  		
@@ -4294,7 +4567,7 @@ Patch.
  	def update_world(self, force = False, newuse = False, deep = False, options = None):
  		"""Does an update world. newuse and deep are the arguments handed to emerge.
  
-@@ -594,8 +642,13 @@
+@@ -594,8 +643,13 @@
  		if not force: opts += system.get_pretend_option()
  		if options is not None: opts += options
  
@@ -4309,7 +4582,7 @@ Patch.
  	def sync (self, command = None):
  		"""Calls "emerge --sync".
  		
-@@ -677,12 +730,12 @@
+@@ -677,12 +731,12 @@
  		@param removeNewFlags: True if new flags should be removed; False otherwise. Default: True.
  		@type removeNewFlags: boolean"""
  		
@@ -4325,7 +4598,7 @@ Patch.
  				except KeyError: # this seems to be removed due to a BlockedException - so no deps here atm ;)
  					debug("Catched KeyError => %s seems not to be in self.deps. Should be no harm in normal cases.", cpv)
  				try:
-@@ -698,11 +751,24 @@
+@@ -698,11 +752,24 @@
  					flags.remove_new_masked(cpv)
  					flags.remove_new_testing(cpv)
  			
@@ -4355,8 +4628,8 @@ Patch.
 === portato/gui/updater.py
 ==================================================================
 --- portato/gui/updater.py	(revision 636)
-+++ portato/gui/updater.py	(patch 0.8.9.2 level 1)
-@@ -0,0 +1,107 @@
++++ portato/gui/updater.py	(patch 0.8.9.3 level 1)
+@@ -0,0 +1,106 @@
 +# -*- coding: utf-8 -*-
 +#
 +# File: portato/gui/updater.py
@@ -4425,11 +4698,10 @@ Patch.
 +			p1 = subprocess.Popen(["qlop", "--current", "--nocolor", "--quiet"], stdout = subprocess.PIPE)
 +			this = subprocess.Popen(["sed", self.SED_EXP], stdout = subprocess.PIPE, stdin = p1.stdout).communicate()[0]
 +			
-+			if this:
-+				this = this.strip()
-+				if this != curr: # changed package
-+					curr = this
-+					self.remove(self.find(curr)) # remove it
++			if this: this = this.strip()
++			if this != curr: # changed package
++				curr and self.remove(self.find(curr)) # remove the previous
++				curr = this
 +			
 +			time.sleep(2.0)
 +				
@@ -4467,7 +4739,7 @@ Patch.
 === portato/gui/templates/portato.glade
 ==================================================================
 --- portato/gui/templates/portato.glade	(revision 636)
-+++ portato/gui/templates/portato.glade	(patch 0.8.9.2 level 1)
++++ portato/gui/templates/portato.glade	(patch 0.8.9.3 level 1)
 @@ -86,9 +86,10 @@
                      <child>
                        <widget class="GtkImageMenuItem" id="emergeItem">
@@ -4502,7 +4774,23 @@ Patch.
                          <property name="use_underline">True</property>
                          <signal name="toggled" handler="cb_show_installed_toggled"/>
                          <accelerator key="i" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-@@ -452,82 +455,97 @@
+@@ -404,7 +407,6 @@
+                           <widget class="GtkTreeView" id="catList">
+                             <property name="visible">True</property>
+                             <property name="search_column">0</property>
+-                            <signal name="cursor_changed" handler="cb_cat_list_selection"/>
+                           </widget>
+                         </child>
+                       </widget>
+@@ -420,7 +422,6 @@
+                             <property name="visible">True</property>
+                             <property name="headers_clickable">True</property>
+                             <property name="search_column">0</property>
+-                            <signal name="cursor_changed" handler="cb_pkg_list_selection"/>
+                           </widget>
+                         </child>
+                       </widget>
+@@ -452,297 +453,355 @@
                      <property name="visible">True</property>
                      <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                      <child>
@@ -4522,7 +4810,6 @@ Patch.
 -                            <property name="stock_id">gtk-add</property>
 -                            <signal name="clicked" handler="cb_package_emerge_clicked"/>
 +                            <property name="spacing">4</property>
-+                            <property name="homogeneous">True</property>
 +                            <child>
 +                              <widget class="GtkLabel" id="nameLabel">
 +                                <property name="visible">True</property>
@@ -4651,311 +4938,469 @@ Patch.
                          <property name="visible">True</property>
 +                        <property name="tab_pos">GTK_POS_BOTTOM</property>
                          <child>
-                           <widget class="GtkEventBox" id="generalEB">
+-                          <widget class="GtkEventBox" id="generalEB">
++                          <widget class="GtkScrolledWindow" id="generalScroll">
                              <property name="visible">True</property>
-@@ -537,117 +555,124 @@
++                            <property name="can_focus">True</property>
+                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
++                            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                             <child>
+-                              <widget class="GtkTable" id="generalTable">
++                              <widget class="GtkViewport" id="generalVB">
                                  <property name="visible">True</property>
                                  <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                 <property name="border_width">6</property>
+-                                <property name="border_width">6</property>
 -                                <property name="n_rows">7</property>
-+                                <property name="n_rows">8</property>
-                                 <property name="n_columns">2</property>
-                                 <property name="column_spacing">5</property>
-                                 <property name="row_spacing">5</property>
+-                                <property name="n_columns">2</property>
+-                                <property name="column_spacing">5</property>
+-                                <property name="row_spacing">5</property>
++                                <property name="resize_mode">GTK_RESIZE_QUEUE</property>
++                                <property name="shadow_type">GTK_SHADOW_NONE</property>
                                  <child>
-+                                  <widget class="GtkLabel" id="licenseLabel">
-+                                    <property name="visible">True</property>
-+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-+                                    <property name="no_show_all">True</property>
-+                                    <property name="xalign">0</property>
-+                                    <property name="label" translatable="yes">label</property>
-+                                    <property name="single_line_mode">True</property>
-+                                  </widget>
-+                                  <packing>
-+                                    <property name="left_attach">1</property>
-+                                    <property name="right_attach">2</property>
-+                                    <property name="top_attach">3</property>
-+                                    <property name="bottom_attach">4</property>
-+                                    <property name="y_options"></property>
-+                                  </packing>
-+                                </child>
-+                                <child>
-                                   <placeholder/>
-                                 </child>
-                                 <child>
-                                   <placeholder/>
-                                 </child>
-                                 <child>
+-                                  <placeholder/>
+-                                </child>
+-                                <child>
+-                                  <placeholder/>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkCheckButton" id="testingCheck">
-+                                  <widget class="GtkLabel" id="licenseLabelLabel">
++                                  <widget class="GtkTable" id="generalTable">
                                      <property name="visible">True</property>
 -                                    <property name="can_focus">True</property>
                                      <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
 -                                    <property name="no_show_all">True</property>
 -                                    <property name="label" translatable="yes">Testing</property>
-                                     <property name="xalign">0</property>
+-                                    <property name="xalign">0</property>
 -                                    <property name="response_id">0</property>
 -                                    <property name="draw_indicator">True</property>
 -                                    <signal name="toggled" handler="cb_testing_toggled"/>
-+                                    <property name="label" translatable="yes">&lt;b&gt;License:&lt;/b&gt;</property>
-+                                    <property name="use_markup">True</property>
-+                                    <property name="single_line_mode">True</property>
-                                   </widget>
-                                   <packing>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="top_attach">5</property>
 -                                    <property name="bottom_attach">6</property>
-+                                    <property name="top_attach">3</property>
-+                                    <property name="bottom_attach">4</property>
-                                     <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="x_options">GTK_FILL</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="maskedLabel">
-+                                  <widget class="GtkLabel" id="notInSysLabel">
-                                     <property name="visible">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
 -                                    <property name="xalign">0</property>
-+                                    <property name="no_show_all">True</property>
-+                                    <property name="label" translatable="yes">&lt;b&gt;Installed, but not in portage anymore&lt;/b&gt;</property>
-+                                    <property name="use_markup">True</property>
-                                   </widget>
-                                   <packing>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="left_attach">1</property>
-                                     <property name="right_attach">2</property>
+-                                    <property name="right_attach">2</property>
 -                                    <property name="top_attach">6</property>
 -                                    <property name="bottom_attach">7</property>
-+                                    <property name="top_attach">4</property>
-+                                    <property name="bottom_attach">5</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkCheckButton" id="maskedCheck">
-+                                  <widget class="GtkLabel" id="missingLabel">
-                                     <property name="visible">True</property>
+-                                    <property name="visible">True</property>
 -                                    <property name="can_focus">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="no_show_all">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="no_show_all">True</property>
 -                                    <property name="label" translatable="yes">Masked</property>
 -                                    <property name="xalign">0</property>
 -                                    <property name="response_id">0</property>
 -                                    <property name="draw_indicator">True</property>
 -                                    <signal name="toggled" handler="cb_masked_toggled"/>
-+                                    <property name="label" translatable="yes">&lt;span foreground='red'&gt;&lt;b&gt;MISSING KEYWORD&lt;/b&gt;&lt;/span&gt;</property>
-+                                    <property name="use_markup">True</property>
-                                   </widget>
-                                   <packing>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="top_attach">6</property>
 -                                    <property name="bottom_attach">7</property>
 -                                    <property name="x_options">GTK_FILL</property>
-+                                    <property name="right_attach">2</property>
-+                                    <property name="top_attach">4</property>
-+                                    <property name="bottom_attach">5</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkCheckButton" id="installedCheck">
-+                                  <widget class="GtkHBox" id="linkBox">
-                                     <property name="visible">True</property>
+-                                    <property name="visible">True</property>
 -                                    <property name="can_focus">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
 -                                    <property name="no_show_all">True</property>
 -                                    <property name="label" translatable="yes">Installed</property>
 -                                    <property name="xalign">0</property>
 -                                    <property name="response_id">0</property>
 -                                    <property name="draw_indicator">True</property>
 -                                    <signal name="button_press_event" handler="cb_button_pressed"/>
-+                                    <property name="spacing">5</property>
-+                                    <child>
-+                                      <placeholder/>
-+                                    </child>
-                                   </widget>
-                                   <packing>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="top_attach">4</property>
 -                                    <property name="bottom_attach">5</property>
 -                                    <property name="x_options">GTK_FILL</property>
-+                                    <property name="left_attach">1</property>
-+                                    <property name="right_attach">2</property>
-+                                    <property name="top_attach">2</property>
-+                                    <property name="bottom_attach">3</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="homepageLinkLabel">
-+                                  <widget class="GtkLabel" id="descLabelLabel">
-                                     <property name="visible">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="xalign">0</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="xalign">0</property>
 -                                    <property name="label" translatable="yes">&lt;b&gt;Homepage:&lt;/b&gt;</property>
-+                                    <property name="label" translatable="yes">&lt;b&gt;Description:&lt;/b&gt;</property>
-                                     <property name="use_markup">True</property>
-                                     <property name="single_line_mode">True</property>
-                                   </widget>
-                                   <packing>
+-                                    <property name="use_markup">True</property>
+-                                    <property name="single_line_mode">True</property>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="top_attach">2</property>
 -                                    <property name="bottom_attach">3</property>
-                                     <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="x_options">GTK_FILL</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="overlayLabel">
-+                                  <widget class="GtkLabel" id="overlayLabelLabel">
-                                     <property name="visible">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="no_show_all">True</property>
-                                     <property name="xalign">0</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="no_show_all">True</property>
+-                                    <property name="xalign">0</property>
 -                                    <property name="label" translatable="yes">label</property>
-+                                    <property name="label" translatable="yes">&lt;b&gt;Overlay:&lt;/b&gt;</property>
-+                                    <property name="use_markup">True</property>
-                                     <property name="single_line_mode">True</property>
-                                   </widget>
-                                   <packing>
+-                                    <property name="single_line_mode">True</property>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="left_attach">1</property>
 -                                    <property name="right_attach">2</property>
-                                     <property name="top_attach">1</property>
-                                     <property name="bottom_attach">2</property>
-+                                    <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-@@ -666,80 +691,106 @@
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <widget class="GtkLabel" id="descLabel">
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="xalign">0</property>
+-                                    <property name="label" translatable="yes">label</property>
+-                                    <property name="wrap">True</property>
+-                                  </widget>
+-                                  <packing>
+-                                    <property name="left_attach">1</property>
+-                                    <property name="right_attach">2</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="overlayLabelLabel">
-+                                  <widget class="GtkLabel" id="overlayLabel">
-                                     <property name="visible">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="no_show_all">True</property>
-                                     <property name="xalign">0</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="no_show_all">True</property>
+-                                    <property name="xalign">0</property>
 -                                    <property name="label" translatable="yes">&lt;b&gt;Overlay:&lt;/b&gt;</property>
 -                                    <property name="use_markup">True</property>
-+                                    <property name="label" translatable="yes">label</property>
-                                     <property name="single_line_mode">True</property>
-                                   </widget>
-                                   <packing>
-+                                    <property name="left_attach">1</property>
-+                                    <property name="right_attach">2</property>
-                                     <property name="top_attach">1</property>
-                                     <property name="bottom_attach">2</property>
+-                                    <property name="single_line_mode">True</property>
+-                                  </widget>
+-                                  <packing>
+-                                    <property name="top_attach">1</property>
+-                                    <property name="bottom_attach">2</property>
 -                                    <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="descLabelLabel">
-+                                  <widget class="GtkLabel" id="homepageLinkLabel">
-                                     <property name="visible">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="xalign">0</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="xalign">0</property>
 -                                    <property name="label" translatable="yes">&lt;b&gt;Description:&lt;/b&gt;</property>
-+                                    <property name="label" translatable="yes">&lt;b&gt;Homepage:&lt;/b&gt;</property>
-                                     <property name="use_markup">True</property>
-                                     <property name="single_line_mode">True</property>
-                                   </widget>
-                                   <packing>
-+                                    <property name="top_attach">2</property>
-+                                    <property name="bottom_attach">3</property>
-                                     <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
+-                                    <property name="use_markup">True</property>
+-                                    <property name="single_line_mode">True</property>
+-                                  </widget>
+-                                  <packing>
+-                                    <property name="x_options">GTK_FILL</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
 -                                  <widget class="GtkHBox" id="linkBox">
-+                                  <widget class="GtkCheckButton" id="installedCheck">
-                                     <property name="visible">True</property>
-+                                    <property name="can_focus">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
 -                                    <property name="spacing">5</property>
--                                    <child>
--                                      <placeholder/>
--                                    </child>
-+                                    <property name="no_show_all">True</property>
-+                                    <property name="label" translatable="yes">Installed</property>
-+                                    <property name="xalign">0</property>
-+                                    <property name="response_id">0</property>
-+                                    <property name="draw_indicator">True</property>
-+                                    <signal name="button_press_event" handler="cb_button_pressed"/>
++                                    <property name="border_width">6</property>
++                                    <property name="n_rows">8</property>
++                                    <property name="n_columns">2</property>
++                                    <property name="column_spacing">5</property>
++                                    <property name="row_spacing">5</property>
+                                     <child>
+                                       <placeholder/>
+                                     </child>
++                                    <child>
++                                      <placeholder/>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="licenseLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">label</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="left_attach">1</property>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">3</property>
++                                        <property name="bottom_attach">4</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="licenseLabelLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">&lt;b&gt;License:&lt;/b&gt;</property>
++                                        <property name="use_markup">True</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">3</property>
++                                        <property name="bottom_attach">4</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="notInSysLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="label" translatable="yes">&lt;b&gt;Installed, but not in portage anymore&lt;/b&gt;</property>
++                                        <property name="use_markup">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">4</property>
++                                        <property name="bottom_attach">5</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="missingLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="label" translatable="yes">&lt;span foreground='red'&gt;&lt;b&gt;MISSING KEYWORD&lt;/b&gt;&lt;/span&gt;</property>
++                                        <property name="use_markup">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">4</property>
++                                        <property name="bottom_attach">5</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkHBox" id="linkBox">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="spacing">5</property>
++                                        <child>
++                                          <placeholder/>
++                                        </child>
++                                      </widget>
++                                      <packing>
++                                        <property name="left_attach">1</property>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">2</property>
++                                        <property name="bottom_attach">3</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="descLabelLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">&lt;b&gt;Description:&lt;/b&gt;</property>
++                                        <property name="use_markup">True</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="overlayLabelLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">&lt;b&gt;Overlay:&lt;/b&gt;</property>
++                                        <property name="use_markup">True</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">1</property>
++                                        <property name="bottom_attach">2</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="descLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">label</property>
++                                        <property name="wrap">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="left_attach">1</property>
++                                        <property name="right_attach">2</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="overlayLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">label</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="left_attach">1</property>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">1</property>
++                                        <property name="bottom_attach">2</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="homepageLinkLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="xalign">0</property>
++                                        <property name="label" translatable="yes">&lt;b&gt;Homepage:&lt;/b&gt;</property>
++                                        <property name="use_markup">True</property>
++                                        <property name="single_line_mode">True</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">2</property>
++                                        <property name="bottom_attach">3</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkCheckButton" id="installedCheck">
++                                        <property name="visible">True</property>
++                                        <property name="can_focus">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="label" translatable="yes">Installed</property>
++                                        <property name="xalign">0</property>
++                                        <property name="response_id">0</property>
++                                        <property name="draw_indicator">True</property>
++                                        <signal name="button_press_event" handler="cb_button_pressed"/>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">5</property>
++                                        <property name="bottom_attach">6</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkCheckButton" id="maskedCheck">
++                                        <property name="visible">True</property>
++                                        <property name="can_focus">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="label" translatable="yes">Masked</property>
++                                        <property name="xalign">0</property>
++                                        <property name="response_id">0</property>
++                                        <property name="draw_indicator">True</property>
++                                        <signal name="toggled" handler="cb_masked_toggled"/>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">7</property>
++                                        <property name="bottom_attach">8</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkLabel" id="maskedLabel">
++                                        <property name="visible">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="xalign">0</property>
++                                      </widget>
++                                      <packing>
++                                        <property name="left_attach">1</property>
++                                        <property name="right_attach">2</property>
++                                        <property name="top_attach">7</property>
++                                        <property name="bottom_attach">8</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
++                                    <child>
++                                      <widget class="GtkCheckButton" id="testingCheck">
++                                        <property name="visible">True</property>
++                                        <property name="can_focus">True</property>
++                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
++                                        <property name="no_show_all">True</property>
++                                        <property name="label" translatable="yes">Testing</property>
++                                        <property name="xalign">0</property>
++                                        <property name="response_id">0</property>
++                                        <property name="draw_indicator">True</property>
++                                        <signal name="toggled" handler="cb_testing_toggled"/>
++                                      </widget>
++                                      <packing>
++                                        <property name="top_attach">6</property>
++                                        <property name="bottom_attach">7</property>
++                                        <property name="x_options">GTK_FILL</property>
++                                        <property name="y_options"></property>
++                                      </packing>
++                                    </child>
                                    </widget>
-                                   <packing>
+-                                  <packing>
 -                                    <property name="left_attach">1</property>
 -                                    <property name="right_attach">2</property>
 -                                    <property name="top_attach">2</property>
 -                                    <property name="bottom_attach">3</property>
-+                                    <property name="top_attach">5</property>
-+                                    <property name="bottom_attach">6</property>
-+                                    <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
+-                                    <property name="y_options"></property>
+-                                  </packing>
                                  </child>
-                                 <child>
+-                                <child>
 -                                  <widget class="GtkLabel" id="missingLabel">
-+                                  <widget class="GtkCheckButton" id="maskedCheck">
-                                     <property name="visible">True</property>
-+                                    <property name="can_focus">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="no_show_all">True</property>
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="no_show_all">True</property>
 -                                    <property name="label" translatable="yes">&lt;span foreground='red'&gt;&lt;b&gt;MISSING KEYWORD&lt;/b&gt;&lt;/span&gt;</property>
 -                                    <property name="use_markup">True</property>
-+                                    <property name="label" translatable="yes">Masked</property>
-+                                    <property name="xalign">0</property>
-+                                    <property name="response_id">0</property>
-+                                    <property name="draw_indicator">True</property>
-+                                    <signal name="toggled" handler="cb_masked_toggled"/>
-                                   </widget>
-                                   <packing>
-+                                    <property name="top_attach">7</property>
-+                                    <property name="bottom_attach">8</property>
-+                                    <property name="x_options">GTK_FILL</property>
-+                                    <property name="y_options"></property>
-+                                  </packing>
-+                                </child>
-+                                <child>
-+                                  <widget class="GtkLabel" id="maskedLabel">
-+                                    <property name="visible">True</property>
-+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-+                                    <property name="xalign">0</property>
-+                                  </widget>
-+                                  <packing>
-+                                    <property name="left_attach">1</property>
-                                     <property name="right_attach">2</property>
--                                    <property name="top_attach">3</property>
--                                    <property name="bottom_attach">4</property>
-+                                    <property name="top_attach">7</property>
-+                                    <property name="bottom_attach">8</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-                                 <child>
--                                  <widget class="GtkLabel" id="notInSysLabel">
-+                                  <widget class="GtkCheckButton" id="testingCheck">
-                                     <property name="visible">True</property>
-+                                    <property name="can_focus">True</property>
-                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                     <property name="no_show_all">True</property>
--                                    <property name="label" translatable="yes">&lt;b&gt;Installed, but not in portage anymore&lt;/b&gt;</property>
--                                    <property name="use_markup">True</property>
-+                                    <property name="label" translatable="yes">Testing</property>
-+                                    <property name="xalign">0</property>
-+                                    <property name="response_id">0</property>
-+                                    <property name="draw_indicator">True</property>
-+                                    <signal name="toggled" handler="cb_testing_toggled"/>
-                                   </widget>
-                                   <packing>
+-                                  </widget>
+-                                  <packing>
 -                                    <property name="right_attach">2</property>
 -                                    <property name="top_attach">3</property>
 -                                    <property name="bottom_attach">4</property>
-+                                    <property name="top_attach">6</property>
-+                                    <property name="bottom_attach">7</property>
-+                                    <property name="x_options">GTK_FILL</property>
-                                     <property name="y_options"></property>
-                                   </packing>
-                                 </child>
-@@ -866,7 +917,7 @@
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+-                                <child>
+-                                  <widget class="GtkLabel" id="notInSysLabel">
+-                                    <property name="visible">True</property>
+-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+-                                    <property name="no_show_all">True</property>
+-                                    <property name="label" translatable="yes">&lt;b&gt;Installed, but not in portage anymore&lt;/b&gt;</property>
+-                                    <property name="use_markup">True</property>
+-                                  </widget>
+-                                  <packing>
+-                                    <property name="right_attach">2</property>
+-                                    <property name="top_attach">3</property>
+-                                    <property name="bottom_attach">4</property>
+-                                    <property name="y_options"></property>
+-                                  </packing>
+-                                </child>
+                               </widget>
+                             </child>
+                           </widget>
+@@ -866,7 +925,7 @@
                            <widget class="GtkLabel" id="label2">
                              <property name="visible">True</property>
                              <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -4964,7 +5409,7 @@ Patch.
                              <property name="use_underline">True</property>
                            </widget>
                            <packing>
-@@ -877,7 +928,7 @@
+@@ -877,7 +936,7 @@
                          </child>
                        </widget>
                        <packing>
@@ -4973,7 +5418,7 @@ Patch.
                        </packing>
                      </child>
                    </widget>
-@@ -891,40 +942,22 @@
+@@ -891,40 +950,22 @@
                      <property name="visible">True</property>
                      <property name="can_focus">True</property>
                      <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -5018,7 +5463,7 @@ Patch.
                                  <child>
                                    <widget class="GtkHBox" id="hbox7">
                                      <property name="visible">True</property>
-@@ -933,7 +966,7 @@
+@@ -933,7 +974,7 @@
                                        <widget class="GtkImage" id="image6">
                                          <property name="visible">True</property>
                                          <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -5027,7 +5472,7 @@ Patch.
                                        </widget>
                                      </child>
                                      <child>
-@@ -941,7 +974,7 @@
+@@ -941,7 +982,7 @@
                                          <property name="visible">True</property>
                                          <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                          <property name="xalign">0</property>
@@ -5036,7 +5481,7 @@ Patch.
                                          <property name="use_underline">True</property>
                                          <property name="single_line_mode">True</property>
                                        </widget>
-@@ -954,43 +987,6 @@
+@@ -954,43 +995,6 @@
                                </widget>
                              </child>
                              <child>
@@ -5080,7 +5525,7 @@ Patch.
                                <widget class="GtkButton" id="updateBtn">
                                  <property name="visible">True</property>
                                  <property name="tooltip" translatable="yes">Calculate the packages which will be installed during an "update world"</property>
-@@ -1000,7 +996,7 @@
+@@ -1000,7 +1004,7 @@
                                  <signal name="clicked" handler="cb_update_clicked"/>
                                </widget>
                                <packing>
@@ -5089,7 +5534,7 @@ Patch.
                                </packing>
                              </child>
                              <child>
-@@ -1013,13 +1009,34 @@
+@@ -1013,13 +1017,34 @@
                                  <signal name="clicked" handler="cb_remove_clicked"/>
                                </widget>
                                <packing>
@@ -5117,7 +5562,7 @@ Patch.
 +                                <property name="enable_search">False</property>
 +                                <signal name="button_press_event" handler="cb_right_click"/>
 +                                <signal name="query_tooltip" handler="cb_queue_tooltip_queried"/>
-+                                <signal name="row_activated" handler="cb_row_activated"/>
++                                <signal name="row_activated" handler="cb_queue_row_activated"/>
 +                              </widget>
 +                            </child>
 +                          </widget>
@@ -5125,293 +5570,7 @@ Patch.
                              <property name="position">1</property>
                            </packing>
                          </child>
-@@ -1440,191 +1457,191 @@
-                               <placeholder/>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="maskLabel">
-+                              <widget class="GtkEntry" id="useFileEdit">
-                                 <property name="visible">True</property>
--                                <property name="xalign">0</property>
--                                <property name="xpad">5</property>
--                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Masking Keywords&lt;/i&gt;&lt;/u&gt;</property>
--                                <property name="use_markup">True</property>
--                                <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">7</property>
--                                <property name="bottom_attach">8</property>
--                                <property name="y_padding">5</property>
-+                                <property name="left_attach">1</property>
-+                                <property name="right_attach">2</property>
-+                                <property name="top_attach">3</property>
-+                                <property name="bottom_attach">4</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="testLabel">
-+                              <widget class="GtkLabel" id="useEditLabel">
-                                 <property name="visible">True</property>
-                                 <property name="xalign">0</property>
--                                <property name="xpad">5</property>
--                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Testing Keywords&lt;/i&gt;&lt;/u&gt;</property>
--                                <property name="use_markup">True</property>
-+                                <property name="label" translatable="yes">File name to use, if package.use is a directory: </property>
-                                 <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">4</property>
--                                <property name="bottom_attach">5</property>
--                                <property name="y_padding">5</property>
-+                                <property name="top_attach">3</property>
-+                                <property name="bottom_attach">4</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="useLabel">
-+                              <widget class="GtkCheckButton" id="usePerVersionCheck">
-                                 <property name="visible">True</property>
--                                <property name="xalign">0</property>
--                                <property name="xpad">5</property>
--                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Use-Flags&lt;/i&gt;&lt;/u&gt;</property>
--                                <property name="use_markup">True</property>
--                                <property name="single_line_mode">True</property>
-+                                <property name="label" translatable="yes">Add only exact version to package.use</property>
-+                                <property name="response_id">0</property>
-+                                <property name="draw_indicator">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">1</property>
--                                <property name="bottom_attach">2</property>
--                                <property name="y_padding">6</property>
--                              </packing>
--                            </child>
--                            <child>
--                              <widget class="GtkEventBox" id="hintEB">
--                                <property name="visible">True</property>
--                                <child>
--                                  <widget class="GtkFrame" id="hintFrame">
--                                    <property name="visible">True</property>
--                                    <property name="label_xalign">0</property>
--                                    <property name="shadow_type">GTK_SHADOW_OUT</property>
--                                    <child>
--                                      <widget class="GtkLabel" id="hintLabel">
--                                        <property name="visible">True</property>
--                                        <property name="xalign">0</property>
--                                        <property name="label" translatable="yes">&lt;u&gt;You may use the following placeholders:&lt;/u&gt;
--
--&lt;i&gt;$(cat)&lt;/i&gt;: category
--&lt;i&gt;$(pkg)&lt;/i&gt;: package name
--&lt;i&gt;$(cat-1)/$(cat-2)&lt;/i&gt;: first/second part of the category</property>
--                                        <property name="use_markup">True</property>
--                                      </widget>
--                                    </child>
--                                    <child>
--                                      <placeholder/>
--                                      <packing>
--                                        <property name="type">label_item</property>
--                                      </packing>
--                                    </child>
--                                  </widget>
--                                </child>
--                              </widget>
--                              <packing>
-                                 <property name="right_attach">2</property>
-+                                <property name="top_attach">2</property>
-+                                <property name="bottom_attach">3</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkCheckButton" id="maskPerVersionCheck">
-+                              <widget class="GtkCheckButton" id="testPerVersionCheck">
-                                 <property name="visible">True</property>
--                                <property name="label" translatable="yes">Add only exact version to package.mask/package.unmask</property>
-+                                <property name="label" translatable="yes">Add only exact version to package.keywords</property>
-                                 <property name="response_id">0</property>
-                                 <property name="draw_indicator">True</property>
-                               </widget>
-                               <packing>
-                                 <property name="right_attach">2</property>
--                                <property name="top_attach">8</property>
--                                <property name="bottom_attach">9</property>
-+                                <property name="top_attach">5</property>
-+                                <property name="bottom_attach">6</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="maskEditLabel">
-+                              <widget class="GtkLabel" id="testEditLabel">
-                                 <property name="visible">True</property>
-                                 <property name="xalign">0</property>
--                                <property name="label" translatable="yes">File name to use, if package.mask/package.unmask is a directory: </property>
-+                                <property name="label" translatable="yes">File name to use, if package.keywords is a directory: </property>
-                                 <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">9</property>
--                                <property name="bottom_attach">10</property>
-+                                <property name="top_attach">6</property>
-+                                <property name="bottom_attach">7</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkEntry" id="maskFileEdit">
-+                              <widget class="GtkEntry" id="testFileEdit">
-                                 <property name="visible">True</property>
-                               </widget>
-                               <packing>
-                                 <property name="left_attach">1</property>
-                                 <property name="right_attach">2</property>
--                                <property name="top_attach">9</property>
--                                <property name="bottom_attach">10</property>
-+                                <property name="top_attach">6</property>
-+                                <property name="bottom_attach">7</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkEntry" id="testFileEdit">
-+                              <widget class="GtkEntry" id="maskFileEdit">
-                                 <property name="visible">True</property>
-                               </widget>
-                               <packing>
-                                 <property name="left_attach">1</property>
-                                 <property name="right_attach">2</property>
--                                <property name="top_attach">6</property>
--                                <property name="bottom_attach">7</property>
-+                                <property name="top_attach">9</property>
-+                                <property name="bottom_attach">10</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="testEditLabel">
-+                              <widget class="GtkLabel" id="maskEditLabel">
-                                 <property name="visible">True</property>
-                                 <property name="xalign">0</property>
--                                <property name="label" translatable="yes">File name to use, if package.keywords is a directory: </property>
-+                                <property name="label" translatable="yes">File name to use, if package.mask/package.unmask is a directory: </property>
-                                 <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">6</property>
--                                <property name="bottom_attach">7</property>
-+                                <property name="top_attach">9</property>
-+                                <property name="bottom_attach">10</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkCheckButton" id="testPerVersionCheck">
-+                              <widget class="GtkCheckButton" id="maskPerVersionCheck">
-                                 <property name="visible">True</property>
--                                <property name="label" translatable="yes">Add only exact version to package.keywords</property>
-+                                <property name="label" translatable="yes">Add only exact version to package.mask/package.unmask</property>
-                                 <property name="response_id">0</property>
-                                 <property name="draw_indicator">True</property>
-                               </widget>
-                               <packing>
-                                 <property name="right_attach">2</property>
--                                <property name="top_attach">5</property>
--                                <property name="bottom_attach">6</property>
-+                                <property name="top_attach">8</property>
-+                                <property name="bottom_attach">9</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkCheckButton" id="usePerVersionCheck">
-+                              <widget class="GtkEventBox" id="hintEB">
-                                 <property name="visible">True</property>
--                                <property name="label" translatable="yes">Add only exact version to package.use</property>
--                                <property name="response_id">0</property>
--                                <property name="draw_indicator">True</property>
-+                                <child>
-+                                  <widget class="GtkFrame" id="hintFrame">
-+                                    <property name="visible">True</property>
-+                                    <property name="label_xalign">0</property>
-+                                    <property name="shadow_type">GTK_SHADOW_OUT</property>
-+                                    <child>
-+                                      <widget class="GtkLabel" id="hintLabel">
-+                                        <property name="visible">True</property>
-+                                        <property name="xalign">0</property>
-+                                        <property name="label" translatable="yes">&lt;u&gt;You may use the following placeholders:&lt;/u&gt;
-+
-+&lt;i&gt;$(cat)&lt;/i&gt;: category
-+&lt;i&gt;$(pkg)&lt;/i&gt;: package name
-+&lt;i&gt;$(cat-1)/$(cat-2)&lt;/i&gt;: first/second part of the category</property>
-+                                        <property name="use_markup">True</property>
-+                                      </widget>
-+                                    </child>
-+                                    <child>
-+                                      <placeholder/>
-+                                      <packing>
-+                                        <property name="type">label_item</property>
-+                                      </packing>
-+                                    </child>
-+                                  </widget>
-+                                </child>
-                               </widget>
-                               <packing>
-                                 <property name="right_attach">2</property>
--                                <property name="top_attach">2</property>
--                                <property name="bottom_attach">3</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkLabel" id="useEditLabel">
-+                              <widget class="GtkLabel" id="useLabel">
-                                 <property name="visible">True</property>
-                                 <property name="xalign">0</property>
--                                <property name="label" translatable="yes">File name to use, if package.use is a directory: </property>
-+                                <property name="xpad">5</property>
-+                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Use-Flags&lt;/i&gt;&lt;/u&gt;</property>
-+                                <property name="use_markup">True</property>
-                                 <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="top_attach">3</property>
--                                <property name="bottom_attach">4</property>
-+                                <property name="top_attach">1</property>
-+                                <property name="bottom_attach">2</property>
-+                                <property name="y_padding">6</property>
-                               </packing>
-                             </child>
-                             <child>
--                              <widget class="GtkEntry" id="useFileEdit">
-+                              <widget class="GtkLabel" id="testLabel">
-                                 <property name="visible">True</property>
-+                                <property name="xalign">0</property>
-+                                <property name="xpad">5</property>
-+                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Testing Keywords&lt;/i&gt;&lt;/u&gt;</property>
-+                                <property name="use_markup">True</property>
-+                                <property name="single_line_mode">True</property>
-                               </widget>
-                               <packing>
--                                <property name="left_attach">1</property>
--                                <property name="right_attach">2</property>
--                                <property name="top_attach">3</property>
--                                <property name="bottom_attach">4</property>
-+                                <property name="top_attach">4</property>
-+                                <property name="bottom_attach">5</property>
-+                                <property name="y_padding">5</property>
-                               </packing>
-                             </child>
-+                            <child>
-+                              <widget class="GtkLabel" id="maskLabel">
-+                                <property name="visible">True</property>
-+                                <property name="xalign">0</property>
-+                                <property name="xpad">5</property>
-+                                <property name="label" translatable="yes">&lt;u&gt;&lt;i&gt;Masking Keywords&lt;/i&gt;&lt;/u&gt;</property>
-+                                <property name="use_markup">True</property>
-+                                <property name="single_line_mode">True</property>
-+                              </widget>
-+                              <packing>
-+                                <property name="top_attach">7</property>
-+                                <property name="bottom_attach">8</property>
-+                                <property name="y_padding">5</property>
-+                              </packing>
-+                            </child>
-                           </widget>
-                         </child>
-                       </widget>
-@@ -1669,83 +1686,231 @@
+@@ -1669,83 +1694,231 @@
                      <property name="visible">True</property>
                      <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                      <child>
@@ -5687,7 +5846,7 @@ Patch.
                        </packing>
                      </child>
                    </widget>
-@@ -1927,14 +2092,17 @@
+@@ -1927,14 +2100,17 @@
      <property name="skip_pager_hint">True</property>
      <property name="urgency_hint">True</property>
      <property name="has_separator">False</property>
@@ -5710,7 +5869,7 @@ Patch.
 === portato/backend/portage/system.py
 ==================================================================
 --- portato/backend/portage/system.py	(revision 636)
-+++ portato/backend/portage/system.py	(patch 0.8.9.2 level 1)
++++ portato/backend/portage/system.py	(patch 0.8.9.3 level 1)
 @@ -70,6 +70,7 @@
  		default_opts = self.get_global_settings("EMERGE_DEFAULT_OPTS")
  		opts = dict(os.environ)
@@ -5719,10 +5878,188 @@ Patch.
  
  		if default_opts:
  			opt_list = default_opts.split()
+@@ -141,6 +142,7 @@
+ 			return list_of_packages
+ 
+ 	def get_global_settings (self, key):
++		self.settings.settings.reset()
+ 		return self.settings.settings[key]
+ 
+ 	def find_best (self, list, only_cpv = False):
+=== portato/backend/package.py
+==================================================================
+--- portato/backend/package.py	(revision 636)
++++ portato/backend/package.py	(patch 0.8.9.3 level 1)
+@@ -12,6 +12,7 @@
+ 
+ from __future__ import absolute_import
+ 
++from ..helper import debug
+ from . import _Package, system, flags
+ 
+ class Package (_Package):
+@@ -96,15 +97,22 @@
+ 		@rtype: string[]"""
+ 
+ 		i_flags = self.get_global_settings("USE", installed = False).split()
++		m_flags = system.get_global_settings("USE").split()
+ 		for f in self.get_new_use_flags():
++			removed = False
++
++			if f[0] == "~":
++				f = f[1:]
++				removed = True
+ 			
+ 			if f[0] == '-':
+-				if flags.invert_use_flag(f) in i_flags:
++				if flags.invert_use_flag(f) in i_flags and not (removed and flags.invert_use_flag(f) in m_flags):
+ 					i_flags.remove(flags.invert_use_flag(f))
+-			
++				
+ 			elif f not in i_flags:
+-				i_flags.append(f)
+-		
++				if not (removed and flags.invert_use_flag(f) in m_flags):
++					i_flags.append(f)
++
+ 		return i_flags
+ 
+ 	def set_use_flag (self, flag):
+@@ -130,7 +138,7 @@
+ 		@returns: USE_EXPAND-value on success
+ 		@rtype: string or None"""
+ 
+-		if not suggest is None:
++		if suggest is not None:
+ 			if flag.startswith(suggest.lower()):
+ 				return suggest
+ 
+=== portato/backend/flags.py
+==================================================================
+--- portato/backend/flags.py	(revision 636)
++++ portato/backend/flags.py	(patch 0.8.9.3 level 1)
+@@ -10,7 +10,7 @@
+ #
+ # Written by René 'Necoro' Neumann <necoro@necoro.net>
+ 
+-from __future__ import absolute_import
++from __future__ import absolute_import, with_statement
+ 
+ import os
+ import os.path
+@@ -250,12 +250,18 @@
+ 				if added: del newUseFlags[-1] # we currently added it as an extra option - delete it
+ 				added = True
+ 				jumpOut = False
+-				for t in [(file, line, invFlag, False),(file, line, flag, True)]:
++				for t in ((file, line, invFlag, False),(file, line, flag, True)):
+ 					if t in newUseFlags[cpv]:
+ 						newUseFlags[cpv].remove(t)
+ 						jumpOut = True
+-						break
+-				if not jumpOut:	newUseFlags[cpv].append((file, line, invFlag, True))
++						# break # don't break as both cases can be valid (see below)
++				if not jumpOut:	
++					newUseFlags[cpv].append((file, line, invFlag, True))
++					
++					# we removed the inverted from package.use - but it is still enabled somewhere else
++					# so set it explicitly here
++					if invFlag in pkg.get_actual_use_flags():
++						newUseFlags[cpv].append((file, line, flag, False))
+ 				break
+ 			
+ 			# we want to duplicate the flag --> ignore
+@@ -306,17 +312,17 @@
+ 	if is_package(cpv):
+ 		cpv = cpv.get_cpv()
+ 
+-	list2return = []
++	list2return = set()
+ 	try:
+ 		for file, line, flag, remove in newUseFlags[cpv]:
+ 			if remove:
+-				list2return.append(invert_use_flag(flag))
++				list2return.add("~"+invert_use_flag(flag))
+ 			else:
+-				list2return.append(flag)
++				list2return.add(flag)
+ 	except KeyError:
+ 		pass
+ 
+-	return list2return
++	return list(list2return)
+ 
+ def write_use_flags ():
+ 	"""This writes our changed useflags into the file."""
+@@ -342,9 +348,11 @@
+ 	file_cache = {} # cache for having to read the file only once: name->[lines]
+ 	for cpv in newUseFlags:
+ 		flagsToAdd = [] # this is used for collecting the flags to be inserted in a _new_ line
++
++		newUseFlags[cpv].sort(key = lambda x: x[3]) # now the flags are sorted in a manner, that removal comes after appending
++
+ 		for file, line, flag, delete in newUseFlags[cpv]:
+ 			line = int(line) # it is saved as a string so far!
+-			
+ 			# add new line
+ 			if line == -1:
+ 				flagsToAdd.append(flag)
+@@ -352,31 +360,30 @@
+ 			else:
+ 				if not file in file_cache:
+ 					# read file
+-					f = open(file, "r")
+-					lines = []
+-					i = 1
+-					while i < line: # stop at the given line
+-						lines.append(f.readline())
+-						i += 1
+-					l = f.readline().split(" ")
+-					
+-					# delete or insert
+-					if delete:
+-						remove(flag,l)
+-					else:
+-						insert(flag,l)
+-					lines.append(" ".join(l))
+-					
+-					# read the rest
+-					lines.extend(f.readlines())
+-					
+-					file_cache[file] = lines
+-					f.close()
++					with open(file, "r") as f:
++						lines = []
++						i = 1
++						while i < line: # stop at the given line
++							lines.append(f.readline())
++							i += 1
++						l = f.readline().split(" ")
++						
++						# delete or insert
++						if delete:
++							remove(flag,l)
++						else:
++							insert(flag,l)
++						lines.append(" ".join(l))
++						
++						# read the rest
++						lines.extend(f.readlines())
++						
++						file_cache[file] = lines
+ 
+ 				else: # in cache
+ 					l = file_cache[file][line-1].split(" ")
+ 					if delete:
+-						remove(flag,l)
++						remove(flag, l)
+ 					else:
+ 						insert(flag,l)
+ 					file_cache[file][line-1] = " ".join(l)
 === portato/plistener.py
 ==================================================================
 --- portato/plistener.py	(revision 636)
-+++ portato/plistener.py	(patch 0.8.9.2 level 1)
++++ portato/plistener.py	(patch 0.8.9.3 level 1)
 @@ -93,7 +93,7 @@
  			try:
  				import shm_wrapper as shm
@@ -5735,7 +6072,7 @@ Patch.
 === etc/portato.cfg
 ==================================================================
 --- etc/portato.cfg	(revision 636)
-+++ etc/portato.cfg	(patch 0.8.9.2 level 1)
++++ etc/portato.cfg	(patch 0.8.9.3 level 1)
 @@ -73,4 +73,13 @@
  ; sets the font of the console - string values
  consolefont = Monospace 11
@@ -5755,7 +6092,7 @@ Patch.
 === shm/shm_wrapper.py
 ==================================================================
 --- shm/shm_wrapper.py	(revision 636)
-+++ shm/shm_wrapper.py	(patch 0.8.9.2 level 1)
++++ shm/shm_wrapper.py	(patch 0.8.9.3 level 1)
 @@ -1,301 +0,0 @@
 -# shm_wrapper - A wrapper for the shm module which provides access
 -# to System V shared memory and semaphores on *nix systems.
@@ -6061,7 +6398,7 @@ Patch.
 === shm/shmmodule.c
 ==================================================================
 --- shm/shmmodule.c	(revision 636)
-+++ shm/shmmodule.c	(patch 0.8.9.2 level 1)
++++ shm/shmmodule.c	(patch 0.8.9.3 level 1)
 @@ -1,1396 +0,0 @@
 -/****************************************************************************
 - *
@@ -7463,505 +7800,546 @@ Patch.
 ==== BEGIN SVK PATCH BLOCK ====
 Version: svk 1.08 (linux)
 
-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
+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
+SvmKRXSLAdn/H5ceuVc=
 ==== END SVK PATCH BLOCK ====
