@@ -55,16 +55,6 @@ pkg_setup ()
 	fi
 }
 
-src_unpack ()
-{
-	unpack ${A}
-	cd "${S}"
-	epatch "${FILESDIR}/${PV}-fixes.patch"
-
-	# workaround
-	touch _shm/__init__.py
-}
-
 src_compile ()
 {
 	cd "${S}"
