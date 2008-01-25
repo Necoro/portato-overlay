@@ -1,6 +1,8 @@
-# Copyright 1999-2006 Gentoo Foundation
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
+
+EAPI=1
 
 NEED_PYTHON="2.5"
 inherit python eutils distutils subversion
@@ -15,7 +17,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="catapult etc-proposals kde libnotify nls userpriv"
+IUSE="catapult etc-proposals kde +libnotify nls userpriv"
 LANGS="de ca pl"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 

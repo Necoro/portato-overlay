@@ -1,6 +1,6 @@
-# Copyright 1999-2007 Gentoo Foundation
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.8.6.ebuild,v 1.1 2007/10/20 17:03:43 jokey Exp $
+# $Header: $
 
 EAPI=1
 
@@ -9,12 +9,14 @@ inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
-SRC_URI="http://download.origo.ethz.ch/portato/${PN}-0.8.9.tar.gz"
+SRC_URI="http://download.origo.ethz.ch/portato/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
 IUSE="etc-proposals kde +libnotify nls userpriv"
+LANGS="de pl"
+for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="x11-libs/vte
 		gnome-base/libglade
@@ -87,7 +89,7 @@ src_compile ()
 			"${PN}"/constants.py
 
 	use userpriv &&	sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
-	use nls && ./pocompile.sh -emerge
+	use nls && ./pocompile.sh -emerge ${LINGUAS}
 
 	distutils_src_compile
 }
