@@ -25,11 +25,11 @@ RDEPEND="x11-libs/vte
 		>=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
 		>=sys-apps/portage-2.1.2
-		
+
 		!userpriv? (
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
 			!kde? ( x11-libs/gksu ) )
-		
+
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
 		etc-proposals? ( app-portage/etc-proposals )"

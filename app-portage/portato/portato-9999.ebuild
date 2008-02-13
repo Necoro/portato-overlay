@@ -27,13 +27,13 @@ RDEPEND="app-portage/portage-utils
 		dev-python/pygtksourceview:2
 		>=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
-		
+
 		!userpriv? (
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
 			!kde? ( x11-libs/gksu ) )
-		
-		catapult? ( 
-			app-portage/catapult 
+
+		catapult? (
+			app-portage/catapult
 			>=dev-python/dbus-python-0.82.2 )
 		!catapult? ( >=sys-apps/portage-2.1.2 )
 		libnotify? ( dev-python/notify-python )
