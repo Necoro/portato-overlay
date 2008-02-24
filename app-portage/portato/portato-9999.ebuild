@@ -17,7 +17,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="catapult etc-proposals kde +libnotify nls userpriv"
+IUSE="etc-proposals kde +libnotify nls userpriv"
 LANGS="de ca pl"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
@@ -27,15 +27,12 @@ RDEPEND="app-portage/portage-utils
 		dev-python/pygtksourceview:2
 		>=dev-python/lxml-1.3.2
 		>=dev-python/pygtk-2.12.0
+		>=sys-apps/portage-2.1.2 
 
 		!userpriv? (
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
 			!kde? ( x11-libs/gksu ) )
 
-		catapult? (
-			app-portage/catapult
-			>=dev-python/dbus-python-0.82.2 )
-		!catapult? ( >=sys-apps/portage-2.1.2 )
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
 		etc-proposals? ( app-portage/etc-proposals )"
@@ -71,10 +68,6 @@ src_compile ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
-	# catapult?
-	local catapult="False"
-	use catapult && catapult="True"
-
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
@@ -84,7 +77,7 @@ src_compile ()
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
 			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
 			${PN}/constants.py
 
 	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
