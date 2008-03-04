@@ -25,7 +25,7 @@ RDEPEND="app-portage/portage-utils
 		x11-libs/vte
 		gnome-base/libglade
 		dev-python/pygtksourceview:2
-		>=dev-python/lxml-1.3.2
+		=dev-python/lxml-1.3.6
 		>=dev-python/pygtk-2.12.0
 		>=sys-apps/portage-2.1.2 
 
