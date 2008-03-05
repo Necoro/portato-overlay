@@ -45,6 +45,7 @@ DATA_DIR="usr/share/${PN}/"
 LOCALE_DIR="usr/share/locale/"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
+TEMPLATE_DIR="${DATA_DIR}/templates"
 
 pkg_setup ()
 {
@@ -71,7 +72,7 @@ src_compile ()
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
-			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1DATA_DIR;" \
+			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1${ROOT}${TEMPLATE_DIR};" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
 			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
