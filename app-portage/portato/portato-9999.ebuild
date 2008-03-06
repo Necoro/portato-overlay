@@ -81,7 +81,7 @@ src_compile ()
 			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
 			${PN}/constants.py
 
-	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-listener/" portato.desktop
+	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop
 	use nls && ./pocompile.sh -emerge ${LINGUAS}
 
 	distutils_src_compile
