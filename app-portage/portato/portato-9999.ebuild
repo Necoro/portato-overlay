@@ -63,10 +63,6 @@ src_compile ()
 	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
 	head -n1)
 
-	# currently only gtk is supported
-	local std="gtk"
-	local frontends="[\"$std\"]"
-
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
@@ -79,8 +75,6 @@ src_compile ()
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
-			-e "s;^\(FRONTENDS\s*=\s*\).*;\1$frontends;" \
-			-e "s;^\(STD_FRONTEND\s*=\s*\).*;\1\"$std\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
 			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
 			${PN}/constants.py
