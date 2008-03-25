@@ -5,11 +5,9 @@
 EAPI=1
 
 NEED_PYTHON="2.5"
-inherit python eutils distutils subversion
+inherit python eutils distutils bzr
 
-PPATH="portato/trunk"
-ESVN_REPO_URI="https://svn.origo.ethz.ch/${PPATH}"
-ESVN_PROJECT="portato"
+EBZR_REPO_URI="lp:portato"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
