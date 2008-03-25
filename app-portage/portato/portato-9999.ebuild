@@ -38,7 +38,6 @@ RDEPEND="app-portage/portage-utils
 
 DEPEND="nls? ( sys-devel/gettext )"
 
-S="${WORKDIR}/${PN}"
 CONFIG_DIR="etc/${PN}/"
 DATA_DIR="usr/share/${PN}/"
 LOCALE_DIR="usr/share/locale/"
