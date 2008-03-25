@@ -7,7 +7,7 @@ EAPI=1
 NEED_PYTHON="2.5"
 inherit python eutils distutils bzr
 
-EBZR_REPO_URI="lp:portato"
+EBZR_REPO_URI="http://bazaar.launchpad.net/~necoro/portato"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
