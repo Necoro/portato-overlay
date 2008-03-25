@@ -57,8 +57,7 @@ pkg_setup ()
 
 src_compile ()
 {
-	local rev=$(svn status -v ${ESVN_STORE_DIR}/${PPATH} | awk '{print $1;}' |
-	head -n1)
+	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
 
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
