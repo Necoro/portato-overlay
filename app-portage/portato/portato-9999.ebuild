@@ -97,6 +97,7 @@ src_install ()
 	insinto ${PLUGIN_DIR}
 	keepdir ${PLUGIN_DIR}
 
+	doins plugins/new_version.xml
 	use etc-proposals && doins plugins/etc_proposals.xml
 	use libnotify && doins plugins/notify.xml
 
