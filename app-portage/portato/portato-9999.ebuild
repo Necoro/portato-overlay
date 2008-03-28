@@ -16,7 +16,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
 IUSE="catapult etc-proposals kde +libnotify nls userpriv"
-LANGS="de ca pl"
+LANGS="ca de tr pl"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="app-portage/portage-utils
