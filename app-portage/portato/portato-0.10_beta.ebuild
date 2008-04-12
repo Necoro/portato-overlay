@@ -8,6 +8,7 @@ NEED_PYTHON="2.5"
 inherit python eutils distutils bzr
 
 EBZR_REPO_URI="http://bazaar.launchpad.net/~necoro/portato/"
+EBZR_BRANCH="0.10"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
@@ -15,7 +16,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="catapult etc-proposals kde +libnotify nls userpriv"
+IUSE="etc-proposals kde +libnotify nls userpriv"
 LANGS="ca de tr pl"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
@@ -33,8 +34,7 @@ RDEPEND="app-portage/portage-utils
 
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
-		etc-proposals? ( app-portage/etc-proposals )
-		catapult? ( app-portage/catapult >=dev-python/dbus-python-0.82.2 )"
+		etc-proposals? ( app-portage/etc-proposals )"
 
 DEPEND="nls? ( sys-devel/gettext )"
 
@@ -62,9 +62,6 @@ src_compile ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
-	local catapult="False"
-	use catapult && catapult="True"
-
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
@@ -72,7 +69,7 @@ src_compile ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
 			${PN}/constants.py
 
 	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop
