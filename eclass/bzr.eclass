@@ -37,7 +37,7 @@ EBZR_FETCH_CMD="bzr branch"
 # @ECLASS-VARIABLE: EBZR_UPDATE_CMD
 # @DESCRIPTION:
 # The bzr command to update the sources.
-EBZR_UPDATE_CMD="bzr pull"
+EBZR_UPDATE_CMD="bzr pull --overwrite"
 
 # @ECLASS-VARIABLE: EBZR_DIFFSTAT_CMD
 # @DESCRIPTION:
