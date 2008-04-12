@@ -9,6 +9,7 @@ inherit python eutils distutils bzr
 
 EBZR_REPO_URI="http://bazaar.launchpad.net/~necoro/portato/"
 EBZR_BRANCH="0.10"
+EBZR_CACHE_DIR="${PV}"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
