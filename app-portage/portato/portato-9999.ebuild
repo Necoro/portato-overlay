@@ -30,13 +30,13 @@ RDEPEND="app-portage/portage-utils
 		<sys-apps/portage-2.2
 
 		!userpriv? (
+			dev-python/shm
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
 			!kde? ( x11-libs/gksu ) )
 
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
-		etc-proposals? ( app-portage/etc-proposals )
-		catapult? ( app-portage/catapult >=dev-python/dbus-python-0.82.2 )"
+		etc-proposals? ( app-portage/etc-proposals )"
 
 DEPEND="nls? ( sys-devel/gettext )"
 
@@ -64,9 +64,6 @@ src_compile ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
 
-	local catapult="False"
-	use catapult && catapult="True"
-
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}\";" \
@@ -74,7 +71,7 @@ src_compile ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1$catapult;" \
+			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
 			${PN}/constants.py
 
 	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop
