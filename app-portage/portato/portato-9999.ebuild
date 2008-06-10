@@ -16,7 +16,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64 ~ppc"
-IUSE="etc-proposals kde +libnotify nls userpriv"
+IUSE="etc-proposals gpytage kde +libnotify nls userpriv"
 LANGS="ca de tr pl"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
@@ -36,7 +36,8 @@ RDEPEND="app-portage/portage-utils
 
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
-		etc-proposals? ( app-portage/etc-proposals )"
+		etc-proposals? ( app-portage/etc-proposals )
+		gpytage? ( app-portage/gpytage )"
 
 DEPEND="nls? ( sys-devel/gettext )"
 
@@ -97,6 +98,7 @@ src_install ()
 	keepdir ${PLUGIN_DIR}
 
 	use etc-proposals && doins plugins/etc_proposals.xml
+	use gpytage && doins plugins/gpytage.xml
 	use libnotify && doins plugins/notify.xml
 	use libnotify && doins plugins/new_version.xml
 
