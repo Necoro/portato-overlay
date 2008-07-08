@@ -39,9 +39,9 @@ RDEPEND="app-portage/portage-utils
 
 DEPEND="nls? ( sys-devel/gettext )"
 
-CONFIG_DIR="etc/${PN}/"
-DATA_DIR="usr/share/${PN}/"
-LOCALE_DIR="usr/share/locale/"
+CONFIG_DIR="etc/${PN}"
+DATA_DIR="usr/share/${PN}"
+LOCALE_DIR="usr/share/locale"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 TEMPLATE_DIR="${DATA_DIR}/templates"
@@ -69,8 +69,7 @@ src_compile ()
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}\";" \
-			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_CATAPULT\s*=\s*\).*;\1False;" \
+			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;"
 			${PN}/constants.py
 
 	use userpriv && sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop
@@ -115,4 +114,8 @@ pkg_postrm ()
 {
 	distutils_pkg_postrm
 	python_mod_cleanup "/${PLUGIN_DIR}"
+
+	# try to remove the DATA_DIR, because it may still reside there, as it was tried
+	# to remove it before plugin stuff was purged
+	rmdir ${ROOT}${DATA_DIR} 2> /dev/null
 }
