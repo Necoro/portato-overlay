@@ -104,3 +104,15 @@ src_install ()
 	# nls
 	use nls && domo i18n/mo/*
 }
+
+pkg_postinst ()
+{
+	distutils_pkg_postinst
+	python_mod_optimize "/${PLUGIN_DIR}"
+}
+
+pkg_postrm ()
+{
+	distutils_pkg_postrm
+	python_mod_cleanup "/${PLUGIN_DIR}"
+}
