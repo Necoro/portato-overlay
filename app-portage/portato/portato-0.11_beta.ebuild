@@ -8,6 +8,7 @@ NEED_PYTHON="2.5"
 inherit python eutils distutils bzr
 
 EBZR_REPO_URI="lp:portato"
+EBZR_BRANCH="0.11"
 EBZR_CACHE_DIR="${P}"
 
 DESCRIPTION="A GUI for Portage written in Python."
