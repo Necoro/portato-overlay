@@ -5,20 +5,17 @@
 EAPI=1
 
 NEED_PYTHON="2.5"
-inherit python eutils distutils bzr
-
-EBZR_REPO_URI="lp:portato"
-EBZR_BRANCH="0.11"
-EBZR_CACHE_DIR="${P}"
+inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
+SRC_URI="http://download.origo.ethz.ch/portato/733/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86 ~amd64 ~ppc"
+KEYWORDS="~amd64 ~ppc ~x86"
 IUSE="kde +libnotify nls userpriv"
-LANGS="ca de tr pl"
+LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="app-portage/portage-utils
@@ -36,8 +33,11 @@ RDEPEND="app-portage/portage-utils
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
 
+# only needs gettext as build dependency
+# python should be set as DEPEND in the python-eclass
 DEPEND="nls? ( sys-devel/gettext )"
 
+S="${WORKDIR}/${PN}"
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
 LOCALE_DIR="usr/share/locale"
@@ -57,19 +57,17 @@ pkg_setup ()
 
 src_compile ()
 {
-	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
-
 	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
+	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
 
-	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
+	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			${PN}/constants.py || die "sed failed"
+			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
 		sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop || die "sed failed"
@@ -96,9 +94,6 @@ src_install ()
 
 	# plugins
 	insinto ${PLUGIN_DIR}
-	keepdir ${PLUGIN_DIR}
-
-	doins plugins/new_version.py || die
 
 	# desktop
 	doicon icons/portato-icon.png || die

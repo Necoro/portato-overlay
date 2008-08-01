@@ -15,9 +15,9 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86 ~amd64 ~ppc"
+KEYWORDS="~amd64 ~ppc ~x86"
 IUSE="kde +libnotify nls userpriv"
-LANGS="ca de tr pl"
+LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="app-portage/portage-utils
@@ -35,6 +35,8 @@ RDEPEND="app-portage/portage-utils
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
 
+# only needs gettext as build dependency
+# python should be set as DEPEND in the python-eclass
 DEPEND="nls? ( sys-devel/gettext )"
 
 CONFIG_DIR="etc/${PN}"
@@ -59,7 +61,7 @@ src_compile ()
 	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
 
 	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t --nonewdcop -i %s -c\" % APP_ICON"
+	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
 
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
@@ -68,7 +70,7 @@ src_compile ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			${PN}/constants.py || die "sed failed"
+			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
 		sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop || die "sed failed"
