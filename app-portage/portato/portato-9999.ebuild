@@ -97,8 +97,6 @@ src_install ()
 
 	# plugins
 	insinto ${PLUGIN_DIR}
-	keepdir ${PLUGIN_DIR}
-
 	doins plugins/new_version.py || die
 
 	# desktop
