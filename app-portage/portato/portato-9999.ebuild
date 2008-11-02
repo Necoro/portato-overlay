@@ -16,7 +16,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
-IUSE="kde +libnotify nls userpriv"
+IUSE="kde +libnotify nls userpriv -sqlite"
 LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
@@ -54,6 +54,13 @@ pkg_setup ()
 		eerror "Please re-emerge vte with the python use-flag enabled."
 		die "missing python flag for x11-libs/vte"
 	fi
+
+	if use sqlite && ! built_with_use dev-lang/python sqlite; then
+		echo
+		eerror "dev-lang/python has not been built with sqlite support."
+		eerror "Please re-emerge python with the sqlite use-flag enabled."
+		die "missing sqlite flag for dev-lang/python"
+	fi
 }
 
 src_compile ()
@@ -63,6 +70,9 @@ src_compile ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
 
+	local sql="False"
+	use sqlite && sql="True"
+
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
@@ -70,6 +80,7 @@ src_compile ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
+			-e "s;^\(USE_SQL\s*=\s*\).*;\1$sql;" \
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
@@ -111,6 +122,8 @@ pkg_postinst ()
 {
 	distutils_pkg_postinst
 	python_mod_optimize "/${PLUGIN_DIR}"
+
+	use sqlite && ewarn "SQLite backend is experimental. You have been warned :)"
 }
 
 pkg_postrm ()
