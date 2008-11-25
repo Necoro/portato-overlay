@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=1
+EAPI=2
 
 NEED_PYTHON="2.5"
 inherit python eutils distutils bzr
@@ -21,8 +21,9 @@ LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="app-portage/portage-utils
-		x11-libs/vte
+		x11-libs/vte[python]
 		gnome-base/libglade
+		dev-lang/python[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.12.0
 		>=sys-apps/portage-2.1.2
@@ -46,22 +47,6 @@ PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 TEMPLATE_DIR="${DATA_DIR}/templates"
 
-pkg_setup ()
-{
-	if ! built_with_use x11-libs/vte python; then
-		echo
-		eerror "x11-libs/vte has not been built with python support."
-		eerror "Please re-emerge vte with the python use-flag enabled."
-		die "missing python flag for x11-libs/vte"
-	fi
-
-	if use sqlite && ! built_with_use dev-lang/python sqlite; then
-		echo
-		eerror "dev-lang/python has not been built with sqlite support."
-		eerror "Please re-emerge python with the sqlite use-flag enabled."
-		die "missing sqlite flag for dev-lang/python"
-	fi
-}
 
 src_compile ()
 {
