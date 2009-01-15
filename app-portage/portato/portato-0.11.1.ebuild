@@ -21,7 +21,7 @@ for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
 		gnome-base/libglade
-		dev-lang/python[threads]
+		dev-lang/python:2.5[threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.12.0
 		>=sys-apps/portage-2.1.2
@@ -46,7 +46,7 @@ PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 TEMPLATE_DIR="${DATA_DIR}/templates"
 
-src_compile ()
+src_configure ()
 {
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
@@ -63,7 +63,10 @@ src_compile ()
 	if use userpriv; then
 		sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop || die "sed failed"
 	fi
+}
 
+src_compile ()
+{
 	if use nls; then
 		./pocompile.sh -emerge ${LINGUAS} || die "pocompile failed"
 	fi
