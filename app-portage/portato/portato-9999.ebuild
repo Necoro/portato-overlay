@@ -16,7 +16,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
-IUSE="kde +libnotify nls userpriv -sqlite"
+IUSE="kde +libnotify nls userpriv sqlite"
 LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
@@ -109,8 +109,6 @@ pkg_postinst ()
 {
 	distutils_pkg_postinst
 	python_mod_optimize "/${PLUGIN_DIR}"
-
-	use sqlite && ewarn "SQLite backend is experimental. You have been warned :)"
 }
 
 pkg_postrm ()
