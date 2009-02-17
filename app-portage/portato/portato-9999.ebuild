@@ -54,9 +54,6 @@ src_configure ()
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
 
-	local sql="False"
-	use sqlite && sql="True"
-
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
@@ -64,7 +61,6 @@ src_configure ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(USE_SQL\s*=\s*\).*;\1$sql;" \
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
