@@ -22,7 +22,6 @@ for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
 
 RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
-		gnome-base/libglade
 		dev-lang/python:2.5[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.12.0
