@@ -7,8 +7,8 @@ EAPI=2
 NEED_PYTHON="2.5"
 inherit python eutils distutils bzr
 
-EBZR_REPO_URI="lp:portato/"
-EBZR_BRANCH="0.12"
+EBZR_REPO_URI="lp:portato/0.12"
+EBZR_BRANCH=""
 EBZR_CACHE_DIR="${P}"
 
 DESCRIPTION="A GUI for Portage written in Python."
@@ -61,7 +61,7 @@ src_configure ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(REPOURI\s*=\s*\).*;\1${EBZR_REPO_URI}/${EBZR_BRANCH};" \
+			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EBZR_REPO_URI}/${EBZR_BRANCH}\";" \
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
