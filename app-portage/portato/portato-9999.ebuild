@@ -60,6 +60,7 @@ src_configure ()
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
 			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
+			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EBZR_REPO_URI}/${EBZR_BRANCH}\";" \
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
