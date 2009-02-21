@@ -24,7 +24,7 @@ RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
 		dev-lang/python:2.5[sqlite?,threads]
 		dev-python/pygtksourceview:2
-		>=dev-python/pygtk-2.12.0
+		>=dev-python/pygtk-2.14.0
 		>=sys-apps/portage-2.1.6
 
 		!userpriv? (
