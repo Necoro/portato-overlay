@@ -24,7 +24,7 @@ RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
 		dev-lang/python:2.5[sqlite?,threads]
 		dev-python/pygtksourceview:2
-		>=dev-python/pygtk-2.12.0
+		>=dev-python/pygtk-2.14.0
 		>=sys-apps/portage-2.1.6
 
 		!userpriv? (
@@ -51,7 +51,7 @@ src_configure ()
 	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
 
 	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
+	use kde && su="\"kdesu -t -d -i '%s' -c\" % APP_ICON"
 
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \

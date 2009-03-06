@@ -47,7 +47,7 @@ TEMPLATE_DIR="${DATA_DIR}/templates"
 src_configure ()
 {
 	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
+	use kde && su="\"kdesu -t -d -i '%s' -c\" % APP_ICON"
 
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
