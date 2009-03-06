@@ -5,18 +5,15 @@
 EAPI=2
 
 NEED_PYTHON="2.5"
-inherit python eutils distutils bzr
-
-EBZR_REPO_URI="lp:portato/0.12"
-EBZR_BRANCH=""
-EBZR_CACHE_DIR="${P}"
+inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
+SRC_URI="http://download.origo.ethz.ch/portato/1037/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc ~x86"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="kde +libnotify nls userpriv sqlite"
 LANGS="ca de pl tr"
 for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
@@ -49,19 +46,16 @@ TEMPLATE_DIR="${DATA_DIR}/templates"
 
 src_configure ()
 {
-	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
-
 	local su="\"gksu -D 'Portato'\""
 	use kde && su="\"kdesu -t -d -i '%s' --nonewdcop -c\" % APP_ICON"
 
-	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
+	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
-			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
-			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EBZR_REPO_URI}/${EBZR_BRANCH}\";" \
+			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;"
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
@@ -92,7 +86,6 @@ src_install ()
 
 	# plugins
 	insinto ${PLUGIN_DIR}
-	doins plugins/new_version.py || die
 
 	# desktop
 	doicon icons/portato-icon.png || die
