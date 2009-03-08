@@ -1,8 +1,8 @@
-# Copyright 1999-2008 Gentoo Foundation
+# Copyright 1999-2009 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=2
+EAPI="2"
 
 NEED_PYTHON="2.5"
 inherit python eutils distutils
@@ -109,5 +109,5 @@ pkg_postrm ()
 
 	# try to remove the DATA_DIR, because it may still reside there, as it was tried
 	# to remove it before plugin stuff was purged
-	rmdir ${ROOT}${DATA_DIR} 2> /dev/null
+	rmdir "${ROOT}"${DATA_DIR} 2> /dev/null
 }
