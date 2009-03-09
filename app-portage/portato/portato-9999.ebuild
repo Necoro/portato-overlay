@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="kde +libnotify nls userpriv sqlite"
 LANGS="ca de es_ES pl tr"
-for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
+for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]

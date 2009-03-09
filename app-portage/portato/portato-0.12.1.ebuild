@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="kde +libnotify nls userpriv sqlite"
 LANGS="ca de es_ES pl tr"
-for LANG in $LANGS; do IUSE="${IUSE} linguas_${LANG}"; done
+for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
@@ -70,22 +70,14 @@ src_compile ()
 		./pocompile.sh -emerge ${LINGUAS} || die "pocompile failed"
 	fi
 
-	# LC_ALL=C is needed, because else the setup fails with
-	# 'locale.Error: unsupported locale setting'
-	# if LC_ALL is empty
-	# XXX: fix this by removing locale call in setup.py
-	LC_ALL="C" distutils_src_compile
+	distutils_src_compile
 }
 
 src_install ()
 {
 	dodir ${DATA_DIR} || die
 
-	# LC_ALL=C is needed, because else the setup fails with
-	# 'locale.Error: unsupported locale setting'
-	# if LC_ALL is empty
-	# XXX: fix this by removing locale call in setup.py
-	LC_ALL="C" distutils_src_install
+	distutils_src_install
 
 	newbin portato.py portato || die
 	dodoc doc/*
