@@ -9,7 +9,7 @@ inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
-SRC_URI="http://download.origo.ethz.ch/portato/1041/${P}.tar.gz"
+SRC_URI="http://download.origo.ethz.ch/portato/1043/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -70,13 +70,22 @@ src_compile ()
 		./pocompile.sh -emerge ${LINGUAS} || die "pocompile failed"
 	fi
 
-	distutils_src_compile
+	# LC_ALL=C is needed, because else the setup fails with
+	# 'locale.Error: unsupported locale setting'
+	# if LC_ALL is empty
+	# XXX: fix this by removing locale call in setup.py
+	LC_ALL="C" distutils_src_compile
 }
 
 src_install ()
 {
 	dodir ${DATA_DIR} || die
-	distutils_src_install
+
+	# LC_ALL=C is needed, because else the setup fails with
+	# 'locale.Error: unsupported locale setting'
+	# if LC_ALL is empty
+	# XXX: fix this by removing locale call in setup.py
+	LC_ALL="C" distutils_src_install
 
 	newbin portato.py portato || die
 	dodoc doc/*
