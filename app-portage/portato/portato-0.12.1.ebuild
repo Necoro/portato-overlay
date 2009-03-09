@@ -9,7 +9,7 @@ inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
-SRC_URI="http://download.origo.ethz.ch/portato/1043/${P}.tar.gz"
+SRC_URI="http://download.origo.ethz.ch/portato/1045/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
