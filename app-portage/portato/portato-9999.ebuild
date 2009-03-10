@@ -79,26 +79,28 @@ src_compile ()
 
 src_install ()
 {
-	dodir ${DATA_DIR} || die
+	dodir ${DATA_DIR} || die "dodir failed"
 	distutils_src_install
 
-	newbin portato.py portato || die
-	dodoc doc/*
+	newbin portato.py portato || die "newbin failed"
+	dodoc doc/* || die "dodoc failed"
 
 	# config
 	insinto ${CONFIG_DIR}
-	doins etc/* || die
+	doins etc/* || die "installing config files failed"
 
 	# plugins
 	insinto ${PLUGIN_DIR}
-	doins plugins/new_version.py || die
+	doins plugins/new_version.py || die "installing new_version.py failed"
 
 	# desktop
-	doicon icons/portato-icon.png || die
-	domenu portato.desktop || die
+	doicon icons/portato-icon.png || die "doicon failed"
+	domenu portato.desktop || die "domenu failed"
 
 	# nls
-	use nls && domo i18n/mo/*
+	if use nls; then
+		domo i18n/mo/* || die "domo failed"
+	fi
 }
 
 pkg_postinst ()
