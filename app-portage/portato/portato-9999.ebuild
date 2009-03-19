@@ -30,7 +30,7 @@ RDEPEND="app-portage/portage-utils
 		!userpriv? (
 			dev-python/shm
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
-			!kde? ( x11-libs/gksu ) )
+			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
 
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
@@ -50,16 +50,12 @@ src_configure ()
 {
 	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
 
-	local su="\"gksu -D 'Portato'\""
-	use kde && su="\"kdesu -t -d -i '%s' -c\" % APP_ICON"
-
 	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
-			-e "s;^\(SU_COMMAND\s*=\s*\).*;\1$su;" \
 			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EBZR_REPO_URI}/${EBZR_BRANCH}\";" \
 			"${PN}"/constants.py || die "sed failed"
 
