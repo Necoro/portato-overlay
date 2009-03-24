@@ -97,6 +97,9 @@ src_install ()
 	if use nls; then
 		domo i18n/mo/* || die "domo failed"
 	fi
+
+	# man page
+	doman portato.1
 }
 
 pkg_postinst ()
