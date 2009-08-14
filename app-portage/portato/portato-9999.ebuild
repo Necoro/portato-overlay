@@ -16,7 +16,7 @@ HOMEPAGE="http://portato.origo.ethz.ch/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
-IUSE="kde +libnotify nls userpriv sqlite"
+IUSE="+eix kde +libnotify nls userpriv sqlite"
 LANGS="ca de es_ES pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
@@ -33,11 +33,12 @@ RDEPEND="app-portage/portage-utils
 			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
 
 		libnotify? ( dev-python/notify-python )
-		nls? ( virtual/libintl )"
+		nls? ( virtual/libintl )
+		eix? ( >=app-portage/eix-0.15.4 )"
 
-# only needs gettext as build dependency
 # python should be set as DEPEND in the python-eclass
-DEPEND="nls? ( sys-devel/gettext )"
+DEPEND="nls? ( sys-devel/gettext )
+		eix? ( >=dev-python/cython-0.11.2 )"
 
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
@@ -70,7 +71,7 @@ src_compile ()
 		./pocompile.sh -emerge ${LINGUAS} || die "pocompile failed"
 	fi
 
-	distutils_src_compile
+	distutils_src_compile $(use_enable eix)
 }
 
 src_install ()
