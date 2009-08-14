@@ -77,7 +77,7 @@ src_compile ()
 src_install ()
 {
 	dodir ${DATA_DIR} || die "dodir failed"
-	distutils_src_install
+	distutils_src_install $(use_enable eix)
 
 	newbin portato.py portato || die "newbin failed"
 	dodoc doc/* || die "dodoc failed"
