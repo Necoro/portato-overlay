@@ -28,7 +28,6 @@ RDEPEND="app-portage/portage-utils
 		>=sys-apps/portage-2.1.6
 
 		!userpriv? (
-			dev-python/shm
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
 			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
 
@@ -38,7 +37,7 @@ RDEPEND="app-portage/portage-utils
 
 # python should be set as DEPEND in the python-eclass
 DEPEND="nls? ( sys-devel/gettext )
-		eix? ( >=dev-python/cython-0.11.2 )"
+		>=dev-python/cython-0.11.2"
 
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
