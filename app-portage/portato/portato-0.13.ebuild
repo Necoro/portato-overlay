@@ -37,7 +37,6 @@ RDEPEND="app-portage/portage-utils
 # python should be set as DEPEND in the python-eclass
 DEPEND="nls? ( sys-devel/gettext )"
 
-S="${WORKDIR}/${PN}"
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
 LOCALE_DIR="usr/share/locale"
