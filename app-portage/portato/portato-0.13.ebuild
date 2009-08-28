@@ -28,7 +28,7 @@ RDEPEND="app-portage/portage-utils
 		!userpriv? (
 			dev-python/shm
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
-			!kde? ( x11-libs/gksu ) )
+			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
 
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
