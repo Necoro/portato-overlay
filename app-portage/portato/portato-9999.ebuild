@@ -5,10 +5,9 @@
 EAPI="2"
 
 NEED_PYTHON="2.5"
-inherit python eutils distutils bzr
+inherit python eutils distutils git
 
-EBZR_REPO_URI="lp:portato"
-EBZR_CACHE_DIR="${P}"
+EGIT_REPO_URI="git://github.com/Necoro/portato.git"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://portato.origo.ethz.ch/"
@@ -48,15 +47,15 @@ TEMPLATE_DIR="${DATA_DIR}/templates"
 
 src_configure ()
 {
-	local rev=$(${EBZR_REVNO_CMD} "${EBZR_STORE_DIR}/${EBZR_CACHE_DIR}")
+	local rev=$(git rev-parse ${EGIT_BRANCH})
 
-	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV} rev. $rev\";" \
+	sed -i 	-e "s;^\(REVISION\s*=\s*\).*;\1\"${rev}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
 			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
 			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
-			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EBZR_REPO_URI}/${EBZR_BRANCH}\";" \
+			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EGIT_REPO_URI}::${EGIT_BRANCH}\";" \
 			"${PN}"/constants.py || die "sed failed"
 
 	if use userpriv; then
