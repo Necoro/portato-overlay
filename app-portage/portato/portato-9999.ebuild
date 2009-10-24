@@ -4,7 +4,7 @@
 
 EAPI="2"
 
-NEED_PYTHON="2.5"
+NEED_PYTHON="2.6"
 inherit python eutils distutils git
 
 EGIT_REPO_URI="git://github.com/Necoro/portato.git"
@@ -21,7 +21,7 @@ for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 RDEPEND="app-portage/portage-utils
 		x11-libs/vte[python]
-		>=dev-lang/python-2.5[sqlite?,threads]
+		>=dev-lang/python-2.6[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.14.0
 		>=sys-apps/portage-2.1.6
