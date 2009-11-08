@@ -16,7 +16,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="+eix kde +libnotify nls userpriv sqlite"
-LANGS="ca de es_ES pl pt_BR tr"
+LANGS="ca de es_ES it pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 RDEPEND="app-portage/portage-utils
