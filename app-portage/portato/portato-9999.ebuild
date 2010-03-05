@@ -24,7 +24,7 @@ RDEPEND="app-portage/portage-utils
 		>=dev-lang/python-2.6[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.14.0
-		>=sys-apps/portage-2.1.6
+		>=sys-apps/portage-2.1.7.17
 
 		!userpriv? (
 			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
