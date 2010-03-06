@@ -26,10 +26,8 @@ RDEPEND="app-portage/portage-utils
 		>=dev-python/pygtk-2.14.0
 		>=sys-apps/portage-2.1.7.17
 
-		!userpriv? (
-			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
-			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
-
+		kde? ( kde-base/kdesu )
+		!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) )
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
 		eix? ( >=app-portage/eix-0.15.4 )"
@@ -93,7 +91,7 @@ src_install ()
 	domenu portato.desktop || die "domenu failed"
 
 	# nls
-	if use nls; then
+	if use nls && [ -d i18n/mo ]; then
 		domo i18n/mo/* || die "domo failed"
 	fi
 

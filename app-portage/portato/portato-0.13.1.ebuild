@@ -1,6 +1,6 @@
-# Copyright 1999-2009 Gentoo Foundation
+# Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.13.1.ebuild,v 1.1 2010/03/03 18:03:04 cla Exp $
 
 EAPI="2"
 
@@ -23,11 +23,11 @@ RDEPEND="app-portage/portage-utils
 		>=dev-lang/python-2.5[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.14.0
+		dev-python/shm
 		>=sys-apps/portage-2.1.6
 
 		!userpriv? (
-			dev-python/shm
-			kde? ( || ( kde-base/kdesu kde-base/kdebase ) )
+			kde? ( kde-base/kdesu )
 			!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) ) )
 
 		libnotify? ( dev-python/notify-python )
