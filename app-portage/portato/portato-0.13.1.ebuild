@@ -89,7 +89,7 @@ src_install ()
 	domenu portato.desktop || die
 
 	# nls
-	use nls && domo i18n/mo/*
+	use nls && [ -d i18n/mo ] && domo i18n/mo/*
 
 	# man page
 	doman portato.1
