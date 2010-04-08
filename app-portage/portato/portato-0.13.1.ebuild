@@ -8,7 +8,7 @@ NEED_PYTHON="2.5"
 inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
-HOMEPAGE="http://portato.origo.ethz.ch/"
+HOMEPAGE="http://necoro.eu/portato/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
