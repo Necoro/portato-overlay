@@ -1,10 +1,9 @@
 # Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.13.1.ebuild,v 1.2 2010/04/08 18:01:48 idl0r Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-portage/portato/portato-0.13.1.ebuild,v 1.3 2010/04/10 14:47:04 idl0r Exp $
 
 EAPI="2"
 
-NEED_PYTHON="2.5"
 inherit python eutils distutils
 
 DESCRIPTION="A GUI for Portage written in Python."
@@ -18,9 +17,14 @@ IUSE="kde +libnotify nls userpriv sqlite"
 LANGS="ca de es_ES pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
-RDEPEND="app-portage/portage-utils
+COMMON_DEPEND="|| (
+			dev-lang/python:2.7[sqlite?,threads]
+			dev-lang/python:2.6[sqlite?,threads]
+			dev-lang/python:2.5[sqlite?,threads] )"
+
+RDEPEND="$COMMON_DEPEND
+		app-portage/portage-utils
 		x11-libs/vte[python]
-		>=dev-lang/python-2.5[sqlite?,threads]
 		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.14.0
 		dev-python/shm
@@ -33,9 +37,8 @@ RDEPEND="app-portage/portage-utils
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )"
 
-# only needs gettext as build dependency
-# python should be set as DEPEND in the python-eclass
-DEPEND="nls? ( sys-devel/gettext )"
+DEPEND="$COMMON_DEPEND
+		nls? ( sys-devel/gettext )"
 
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
@@ -43,6 +46,12 @@ LOCALE_DIR="usr/share/locale"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 TEMPLATE_DIR="${DATA_DIR}/templates"
+
+pkg_setup()
+{
+	python_set_active_version 2
+	python_pkg_setup
+}
 
 src_configure ()
 {
@@ -74,6 +83,7 @@ src_install ()
 
 	distutils_src_install
 
+	python_convert_shebangs 2 portato.py
 	newbin portato.py portato || die
 	dodoc doc/*
 
@@ -90,7 +100,7 @@ src_install ()
 
 	# nls
 	if use nls && [ -d i18n/mo ]; then
-		domo i18n/mo/* || die "domo failed"
+		domo i18n/mo/*
 	fi
 
 	# man page
@@ -108,7 +118,7 @@ pkg_postrm ()
 	distutils_pkg_postrm
 	python_mod_cleanup "/${PLUGIN_DIR}"
 
-	# try to remove the DATA_DIR, because it may still reside there, as it was tried
-	# to remove it before plugin stuff was purged
+	# try to remove the DATA_DIR, as it may still exist
+	# reason: it was tried to remove it before plugin stuff was purged
 	rmdir "${ROOT}"${DATA_DIR} 2> /dev/null
 }

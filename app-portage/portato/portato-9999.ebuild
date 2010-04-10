@@ -4,7 +4,6 @@
 
 EAPI="2"
 
-NEED_PYTHON="2.6"
 inherit python eutils distutils git
 
 EGIT_REPO_URI="git://github.com/Necoro/portato.git"
@@ -19,11 +18,15 @@ IUSE="+eix kde +libnotify nls userpriv sqlite"
 LANGS="ca de es_ES it pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
-RDEPEND="app-portage/portage-utils
+COMMON_DEPEND="|| (
+			dev-lang/python:2.7[sqlite?,threads]
+			dev-lang/python:2.6[sqlite?,threads] )"
+
+RDEPEND="$COMMON_DEPEND
+		app-portage/portage-utils
 		x11-libs/vte[python]
-		>=dev-lang/python-2.6[sqlite?,threads]
-		dev-python/pygtksourceview:2
 		>=dev-python/pygtk-2.14.0
+		dev-python/pygtksourceview:2
 		>=sys-apps/portage-2.1.7.17
 
 		kde? ( kde-base/kdesu )
@@ -33,7 +36,8 @@ RDEPEND="app-portage/portage-utils
 		eix? ( >=app-portage/eix-0.15.4 )"
 
 # python should be set as DEPEND in the python-eclass
-DEPEND="nls? ( sys-devel/gettext )
+DEPEND="$COMMON_DEPEND
+		nls? ( sys-devel/gettext )
 		>=dev-python/cython-0.11.2"
 
 CONFIG_DIR="etc/${PN}"
@@ -42,6 +46,12 @@ LOCALE_DIR="usr/share/locale"
 PLUGIN_DIR="${DATA_DIR}/plugins"
 ICON_DIR="${DATA_DIR}/icons"
 TEMPLATE_DIR="${DATA_DIR}/templates"
+
+pkg_setup()
+{
+	python_set_active_version 2
+	python_pkg_setup
+}
 
 src_configure ()
 {
@@ -92,7 +102,7 @@ src_install ()
 
 	# nls
 	if use nls && [ -d i18n/mo ]; then
-		domo i18n/mo/* || die "domo failed"
+		domo i18n/mo/*
 	fi
 
 	# man page
