@@ -10,7 +10,7 @@ inherit python eutils distutils git
 EGIT_REPO_URI="git://github.com/Necoro/portato.git"
 
 DESCRIPTION="A GUI for Portage written in Python."
-HOMEPAGE="http://necoro.eu/portato/"
+HOMEPAGE="http://necoro.eu/portato"
 
 LICENSE="GPL-2"
 SLOT="0"
