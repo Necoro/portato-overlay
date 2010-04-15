@@ -54,9 +54,7 @@ pkg_setup()
 
 src_configure ()
 {
-	local rev=$(git rev-parse ${EGIT_BRANCH})
-
-	sed -i 	-e "s;^\(REVISION\s*=\s*\).*;\1\"${rev}\";" \
+	sed -i 	-e "s;^\(REVISION\s*=\s*\).*;\1\"${EGIT_VERSION}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
