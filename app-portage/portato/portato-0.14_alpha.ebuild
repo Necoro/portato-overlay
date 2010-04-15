@@ -7,6 +7,7 @@ EAPI="2"
 inherit python eutils distutils git
 
 EGIT_REPO_URI="git://github.com/Necoro/portato.git"
+EGIT_BRANCH="0.14"
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://necoro.eu/portato"
