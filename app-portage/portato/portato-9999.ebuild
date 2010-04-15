@@ -14,7 +14,7 @@ HOMEPAGE="http://necoro.eu/portato"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
-IUSE="+eix kde +libnotify nls userpriv sqlite"
+IUSE="+eix kde libnotify nls +sqlite userpriv"
 LANGS="ca de es fr it pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
@@ -50,6 +50,12 @@ TEMPLATE_DIR="${DATA_DIR}/templates"
 pkg_setup()
 {
 	python_set_active_version 2
+
+	if use eix && ! use sqlite; then
+		ewarn "You have enabled 'eix' but not 'sqlite'!"
+		ewarn "eix-support depends on sqlite, so it will be disabled as well."
+		ewarn
+	fi
 }
 
 src_configure ()
@@ -66,6 +72,19 @@ src_configure ()
 	if use userpriv; then
 		sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop || die "sed failed"
 	fi
+
+	# change configured db-type depending on useflags
+	local dbtype="dict"
+
+	if use sqlite; then
+		if use eix; then
+			dbtype="eixsql"
+		else
+			dbtype="sql"
+		fi
+	fi
+
+	sed -i -e "s;^\(type\s*=\s*\).*;\1${dbtype};" etc/portato.cfg || die "sed failed"
 }
 
 src_compile ()
@@ -74,13 +93,22 @@ src_compile ()
 		./pocompile.sh -emerge ${LINGUAS} || die "pocompile failed"
 	fi
 
-	distutils_src_compile $(use_enable eix)
+	if ! use eix || ! use sqlite; then
+		distutils_src_compile --disable-eix
+	else
+		distutils_src_compile
+	fi
 }
 
 src_install ()
 {
 	dodir ${DATA_DIR} || die "dodir failed"
-	distutils_src_install $(use_enable eix)
+
+	if ! use eix || ! use sqlite; then
+		distutils_src_install --disable-eix
+	else
+		distutils_src_install
+	fi
 
 	newbin portato.py portato || die "newbin failed"
 	dodoc doc/* || die "dodoc failed"
@@ -110,6 +138,13 @@ pkg_postinst ()
 {
 	distutils_pkg_postinst
 	python_mod_optimize "/${PLUGIN_DIR}"
+
+	if use eix && use sqlite; then
+		elog
+		elog "If you are using eix-remote there is no guarantee,"
+		elog "that portato will work as expected with the eixsql database."
+		elog "If in doubt, change back to sql."
+	fi
 }
 
 pkg_postrm ()
