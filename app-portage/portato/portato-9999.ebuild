@@ -38,7 +38,7 @@ RDEPEND="$COMMON_DEPEND
 # python should be set as DEPEND in the python-eclass
 DEPEND="$COMMON_DEPEND
 		nls? ( sys-devel/gettext )
-		>=dev-python/cython-0.11.2"
+		>=dev-python/cython-0.12"
 
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
