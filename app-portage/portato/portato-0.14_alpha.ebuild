@@ -4,10 +4,10 @@
 
 EAPI="2"
 
-inherit python eutils distutils git
-
 EGIT_REPO_URI="git://github.com/Necoro/portato.git"
 EGIT_BRANCH="0.14"
+
+inherit python eutils distutils git
 
 DESCRIPTION="A GUI for Portage written in Python."
 HOMEPAGE="http://necoro.eu/portato"
@@ -55,7 +55,8 @@ pkg_setup()
 
 src_configure ()
 {
-	sed -i 	-e "s;^\(REVISION\s*=\s*\).*;\1\"${EGIT_VERSION}\";" \
+	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
+			-e "s;^\(REVISION\s*=\s*\).*;\1\"${EGIT_VERSION}\";" \
 			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
 			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
 			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
