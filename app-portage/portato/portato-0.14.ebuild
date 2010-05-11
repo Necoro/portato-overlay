@@ -1,4 +1,4 @@
-# Copyright 1999-2009 Gentoo Foundation
+# Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -18,24 +18,24 @@ LANGS="ca de es fr it pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 COMMON_DEPEND="|| (
-			dev-lang/python:2.7[sqlite?,threads]
-			dev-lang/python:2.6[sqlite?,threads] )"
+	dev-lang/python:2.7[sqlite?,threads]
+	dev-lang/python:2.6[sqlite?,threads] )"
 
 RDEPEND="$COMMON_DEPEND
-		app-portage/portage-utils
-		x11-libs/vte[python]
-		>=dev-python/pygtk-2.14.0
-		dev-python/pygtksourceview:2
-		>=sys-apps/portage-2.1.7.17
+	app-portage/portage-utils
+	x11-libs/vte[python]
+	>=dev-python/pygtk-2.14.0
+	dev-python/pygtksourceview:2
+	>=sys-apps/portage-2.1.7.17
 
-		kde? ( kde-base/kdesu )
-		!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) )
-		libnotify? ( dev-python/notify-python )
-		nls? ( virtual/libintl )
-		eix? ( >=app-portage/eix-0.15.4 )"
+	kde? ( kde-base/kdesu )
+	!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) )
+	libnotify? ( dev-python/notify-python )
+	nls? ( virtual/libintl )
+	eix? ( >=app-portage/eix-0.15.4 )"
 
 DEPEND="$COMMON_DEPEND
-		nls? ( sys-devel/gettext )"
+	nls? ( sys-devel/gettext )"
 
 # filled later on
 PLUGIN_DIR=""
