@@ -54,7 +54,6 @@ pkg_setup()
 	if use eix && ! use sqlite; then
 		ewarn "You have enabled 'eix' but not 'sqlite'!"
 		ewarn "eix-support depends on sqlite, so it will be disabled as well."
-		ewarn
 	fi
 }
 
@@ -140,7 +139,7 @@ pkg_postinst ()
 	python_mod_optimize "/${PLUGIN_DIR}"
 
 	if use eix && use sqlite; then
-		elog
+		einfo
 		elog "If you are using eix-remote there is no guarantee,"
 		elog "that portato will work as expected with the eixsql database."
 		elog "If in doubt, change back to sql."

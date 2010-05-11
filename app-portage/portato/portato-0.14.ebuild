@@ -4,13 +4,11 @@
 
 EAPI="2"
 
-EGIT_REPO_URI="git://github.com/Necoro/portato.git"
-EGIT_BRANCH="0.14"
+inherit python eutils distutils
 
-inherit python eutils distutils git
-
-DESCRIPTION="A GUI for Portage written in Python."
+DESCRIPTION="A GUI for Portage written in Python"
 HOMEPAGE="http://necoro.eu/portato"
+SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -36,17 +34,11 @@ RDEPEND="$COMMON_DEPEND
 		nls? ( virtual/libintl )
 		eix? ( >=app-portage/eix-0.15.4 )"
 
-# python should be set as DEPEND in the python-eclass
 DEPEND="$COMMON_DEPEND
-		nls? ( sys-devel/gettext )
-		>=dev-python/cython-0.12"
+		nls? ( sys-devel/gettext )"
 
-CONFIG_DIR="etc/${PN}"
-DATA_DIR="usr/share/${PN}"
-LOCALE_DIR="usr/share/locale"
-PLUGIN_DIR="${DATA_DIR}/plugins"
-ICON_DIR="${DATA_DIR}/icons"
-TEMPLATE_DIR="${DATA_DIR}/templates"
+# filled later on
+PLUGIN_DIR=""
 
 pkg_setup()
 {
@@ -55,21 +47,16 @@ pkg_setup()
 	if use eix && ! use sqlite; then
 		ewarn "You have enabled 'eix' but not 'sqlite'!"
 		ewarn "eix-support depends on sqlite, so it will be disabled as well."
-		ewarn
 	fi
 }
 
 src_configure ()
 {
-	sed -i 	-e "s;^\(VERSION\s*=\s*\).*;\1\"${PV}\";" \
-			-e "s;^\(REVISION\s*=\s*\).*;\1\"${EGIT_VERSION}\";" \
-			-e "s;^\(CONFIG_DIR\s*=\s*\).*;\1\"${ROOT}${CONFIG_DIR}/\";" \
-			-e "s;^\(DATA_DIR\s*=\s*\).*;\1\"${ROOT}${DATA_DIR}/\";" \
-			-e "s;^\(TEMPLATE_DIR\s*=\s*\).*;\1\"${ROOT}${TEMPLATE_DIR}/\";" \
-			-e "s;^\(ICON_DIR\s*=\s*\).*;\1\"${ROOT}${ICON_DIR}/\";" \
-			-e "s;^\(LOCALE_DIR\s*=\s*\).*;\1\"${ROOT}${LOCALE_DIR}/\";" \
-			-e "s;^\(REPOURI\s*=\s*\).*;\1\"${EGIT_REPO_URI}::${EGIT_BRANCH}\";" \
-			"${PN}"/constants.py || die "sed failed"
+	# set this before changing ROOT_DIR
+	# else it would include $ROOT -- which would be plusungood
+	PLUGIN_DIR=$(./portato.py --plugin-dir)
+
+	sed -i -e "s;^\(ROOT_DIR\s*=\s*\).*;\1\"${ROOT}\";" portato/constants.py || die "sed failed"
 
 	if use userpriv; then
 		sed -i -e "s/Exec=.*/Exec=portato --no-fork/" portato.desktop || die "sed failed"
@@ -104,8 +91,6 @@ src_compile ()
 
 src_install ()
 {
-	dodir ${DATA_DIR} || die "dodir failed"
-
 	if ! use eix || ! use sqlite; then
 		distutils_src_install --disable-eix
 	else
@@ -116,12 +101,8 @@ src_install ()
 	dodoc doc/* || die "dodoc failed"
 
 	# config
-	insinto ${CONFIG_DIR}
+	insinto /etc
 	doins etc/* || die "installing config files failed"
-
-	# plugins
-	insinto ${PLUGIN_DIR}
-	doins plugins/new_version.py || die "installing new_version.py failed"
 
 	# desktop
 	doicon icons/portato-icon.png || die "doicon failed"
@@ -139,10 +120,10 @@ src_install ()
 pkg_postinst ()
 {
 	distutils_pkg_postinst
-	python_mod_optimize "/${PLUGIN_DIR}"
+	python_mod_optimize "${PLUGIN_DIR}"
 
 	if use eix && use sqlite; then
-		elog
+		einfo
 		elog "If you are using eix-remote there is no guarantee,"
 		elog "that portato will work as expected with the eixsql database."
 		elog "If in doubt, change back to sql."
@@ -152,9 +133,9 @@ pkg_postinst ()
 pkg_postrm ()
 {
 	distutils_pkg_postrm
-	python_mod_cleanup "/${PLUGIN_DIR}"
+	python_mod_cleanup "${PLUGIN_DIR}"
 
-	# try to remove the DATA_DIR, because it may still reside there, as it was tried
-	# to remove it before plugin stuff was purged
-	rmdir "${ROOT}"${DATA_DIR} 2> /dev/null
+	# try to remove the DATA_DIR, as it may still exist
+	# reason: it was tried to remove it before plugin stuff was purged
+	rmdir "${ROOT}"$(dirname ${PLUGIN_DIR}) 2> /dev/null
 }
