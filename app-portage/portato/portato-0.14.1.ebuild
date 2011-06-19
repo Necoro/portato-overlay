@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="2"
+EAPI="3"
 
 inherit python eutils distutils
 
@@ -23,7 +23,7 @@ COMMON_DEPEND="|| (
 
 RDEPEND="$COMMON_DEPEND
 	app-portage/portage-utils
-	x11-libs/vte[python]
+	x11-libs/vte:0[python]
 	>=dev-python/pygtk-2.14.0
 	dev-python/pygtksourceview:2
 	>=sys-apps/portage-2.1.7.17
