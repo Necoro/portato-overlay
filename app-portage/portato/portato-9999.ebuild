@@ -15,7 +15,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="+eix kde libnotify nls +sqlite userpriv"
-LANGS="ca de es fr it pl pt_BR tr"
+LANGS="ca de el es fr it pl pt_BR tr"
 for X in $LANGS; do IUSE="${IUSE} linguas_${X}"; done
 
 COMMON_DEPEND="|| (
@@ -38,7 +38,7 @@ RDEPEND="$COMMON_DEPEND
 # python should be set as DEPEND in the python-eclass
 DEPEND="$COMMON_DEPEND
 		nls? ( sys-devel/gettext )
-		>=dev-python/cython-0.12"
+		>=dev-python/cython-0.13"
 
 CONFIG_DIR="etc/${PN}"
 DATA_DIR="usr/share/${PN}"
