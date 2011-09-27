@@ -30,7 +30,7 @@ RDEPEND="$COMMON_DEPEND
 		>=sys-apps/portage-2.1.7.17
 
 		kde? ( kde-base/kdesu )
-		!kde? ( || ( x11-misc/ktsuss x11-libs/gksu ) )
+		!kde? ( x11-libs/gksu )
 		libnotify? ( dev-python/notify-python )
 		nls? ( virtual/libintl )
 		eix? ( >=app-portage/eix-0.15.4 )"
