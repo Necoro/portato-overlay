@@ -1,2 +1,4 @@
-=app-portage/portato-9999
-=app-portage/portato-0.14.9999
+# Mask portato completely
+# it does not work with a current portage :(
+app-portage/portato
+#=app-portage/portato-0.14.9999
